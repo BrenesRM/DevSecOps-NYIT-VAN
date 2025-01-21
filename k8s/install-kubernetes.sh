@@ -1,41 +1,25 @@
 #!/bin/bash
 
-# Update the system
-echo "Updating the system..."
-sudo apt update -y && sudo apt upgrade -y
-
-# Install dependencies
-echo "Installing required dependencies..."
-sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
-
-# Add Kubernetes' official GPG key
-echo "Adding Kubernetes GPG key..."
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-
-# Add Kubernetes APT repository
-echo "Adding Kubernetes repository..."
-sudo sh -c 'echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list'
-
 # Update apt package list
-echo "Updating apt package list..."
-sudo apt update -y
+sudo apt update
 
-# Install kubelet, kubeadm, and kubectl
-echo "Installing kubelet, kubeadm, and kubectl..."
-sudo apt install -y kubelet kubeadm kubectl
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
 
-# Hold the packages at their installed versions
-echo "Holding Kubernetes packages at their installed versions..."
-sudo apt-mark hold kubelet kubeadm kubectl
+# Add user to docker group
+sudo usermod -aG docker $USER
+newgrp docker
 
-# Disable swap (required for Kubernetes)
-echo "Disabling swap..."
-sudo swapoff -a
-# To make the change permanent
-sudo sed -i '/swap/d' /etc/fstab
+# Install kind if architecture is x86_64
+if [ $(uname -m) = x86_64 ]; then
+  curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+  chmod +x ./kind
+  sudo mv ./kind /usr/local/bin/kind
+fi
 
-# Enable kubelet service
-echo "Enabling kubelet service..."
-sudo systemctl enable kubelet && sudo systemctl start kubelet
+# Verify kind installation
+kind version
 
-echo "Kubernetes installation completed!"
+# Install kubectl using snap
+sudo snap install kubectl --classic
