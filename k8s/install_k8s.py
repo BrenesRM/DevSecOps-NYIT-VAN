@@ -1,59 +1,52 @@
+#!/bin/python3
+
 import subprocess
 
-def run_command(command):
-    """Run a system command and return the output."""
-    try:
-        result = subprocess.run(command, check=True, text=True, capture_output=True)
-        print(f"Command succeeded: {command}")
-        print(result.stdout)
-    except subprocess.CalledProcessError as e:
-        print(f"Command failed: {command}")
-        print(e.stderr)
+def install_docker():
+  """Installs Docker on the system."""
+  print("Updating apt package list...")
+  subprocess.run(["apt", "update"])  # No sudo needed for apt update
 
-def install_kubernetes():
-    """Install Kubernetes and its dependencies on Ubuntu."""
-    
-    # Update the system
-    print("Updating the system...")
-    run_command(["sudo", "apt", "update", "-y"])
-    run_command(["sudo", "apt", "upgrade", "-y"])
+  print("Downloading Docker installation script...")
+  subprocess.run(["curl", "-fsSL", "https://get.docker.com", "-o", "get-docker.sh"])
 
-    # Install required dependencies
-    print("Installing required dependencies...")
-    run_command(["sudo", "apt", "install", "-y", "apt-transport-https", "ca-certificates", "curl", "software-properties-common"])
+  print("Installing Docker...")
+  # Explicitly check for presence of sudo before running the command
+  if subprocess.run(["which", "sudo"], capture_output=True).returncode == 0:
+    subprocess.run(["sudo", "sh", "get-docker.sh"])
+  else:
+    print("Warning: 'sudo' not found. You may need to run this script with sudo privileges to install Docker.")
 
-    # Add Kubernetes GPG key
-    print("Adding Kubernetes GPG key...")
-    run_command(["curl", "-s", "https://packages.cloud.google.com/apt/doc/apt-key.gpg", "|", "sudo", "apt-key", "add", "-"])
+  print("Adding user to docker group...")
+  # Check for sudo and run accordingly
+  if subprocess.run(["which", "sudo"], capture_output=True).returncode == 0:
+    subprocess.run(["sudo", "usermod", "-aG", "docker", "$USER"])
+    subprocess.run(["sudo", "newgrp", "docker"])
+  else:
+    print("Warning: 'sudo' not found. You may need to manually add your user to the docker group after installation.")
 
-    # Add Kubernetes APT repository
-    print("Adding Kubernetes repository...")
-    run_command(["sudo", "sh", "-c", 'echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list'])
+def install_kind():
+  """Installs Kind if the architecture is x86_64."""
+  if subprocess.run(["uname", "-m"], capture_output=True).stdout.decode().strip() == "x86_64":
+    print("Downloading Kind...")
+    subprocess.run(["curl", "-Lo", "./kind", "https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64"])
 
-    # Update apt package list
-    print("Updating apt package list...")
-    run_command(["sudo", "apt", "update", "-y"])
+    print("Making Kind executable...")
+    subprocess.run(["chmod", "+x", "./kind"])
 
-    # Install kubelet, kubeadm, and kubectl
-    print("Installing kubelet, kubeadm, and kubectl...")
-    run_command(["sudo", "apt", "install", "-y", "kubelet", "kubeadm", "kubectl"])
+    print("Moving Kind to /usr/local/bin...")
+    subprocess.run(["sudo", "mv", "./kind", "/usr/local/bin/kind"])
 
-    # Hold the packages at their installed versions
-    print("Holding Kubernetes packages at their installed versions...")
-    run_command(["sudo", "apt-mark", "hold", "kubelet", "kubeadm", "kubectl"])
+def install_kubectl():
+  """Installs kubectl using snap."""
+  print("Installing kubectl using snap...")
+  subprocess.run(["sudo", "snap", "install", "kubectl", "--classic"])
 
-    # Disable swap (required for Kubernetes)
-    print("Disabling swap...")
-    run_command(["sudo", "swapoff", "-a"])
-    # Make the change permanent
-    run_command(["sudo", "sed", "-i", "/swap/d", "/etc/fstab"])
-
-    # Enable and start kubelet service
-    print("Enabling and starting kubelet service...")
-    run_command(["sudo", "systemctl", "enable", "kubelet"])
-    run_command(["sudo", "systemctl", "start", "kubelet"])
-
-    print("Kubernetes installation completed!")
+def main():
+  """Installs Kubernetes and its dependencies."""
+  install_docker()
+  install_kind()
+  install_kubectl()
 
 if __name__ == "__main__":
-    install_kubernetes()
+  main()
