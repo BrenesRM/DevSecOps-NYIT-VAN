@@ -157,5 +157,4 @@ Copy code
 6. **Testing Vulnerabilities**: Mentions the intentionally included vulnerabilities for security testing.
 7. **Running the Application**: Instructions on how to deploy and run the app within Kubernetes.
 
-You can modify the sections to add specific details related to your environment or project requirements. Let me know if you need further assistance!
-
+You can modify the sections to add specific details related to your environment or project requirements. Let me know if you need further assistance!!
