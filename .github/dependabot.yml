@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # Update Python dependencies from requirements.txt
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    versioning-strategy: "increase"
+
+  # Update Dockerfile dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    versioning-strategy: "increase"
