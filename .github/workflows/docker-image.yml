@@ -36,3 +36,9 @@ jobs:
           tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           build-args: |
             APP_ENV=${{ secrets.APP_ENV }}
+
+      # 4. scan Docker image
+      - name: Scan Docker image
+        uses: aquasecurity/trivy-action@v0.11.1
+        with:
+          image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
