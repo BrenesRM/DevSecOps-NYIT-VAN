@@ -39,6 +39,6 @@ jobs:
 
       # 4. scan Docker image
       - name: Scan Docker image
-        uses: aquasecurity/trivy-action@v0.11.1
+        uses: aquasecurity/trivy-action@main
         with:
           image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
