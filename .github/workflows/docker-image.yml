@@ -45,12 +45,6 @@ jobs:
 
 #---------------------------
 
-
-      # 5. Notify on workflow result
-      - name: Notify build status
-        if: always()
-        run: echo "Workflow completed with status: ${{ job.status }}"
-
       # 6. Log build activities
       - name: Log build to file
         if: always()
