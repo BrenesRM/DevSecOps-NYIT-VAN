@@ -16,24 +16,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout code source
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
+      # 1. Checkout source code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # 2. Log in to Docker Hub
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      # 2. Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build & Push
-      uses: docker/build-push-action@v3
-      with:
-        push: true
-        tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-        build-args: |
-          APP_ENV=${{ secrets.APP_ENV }}
-
-
-  
+      # 3. Build & Push the Docker image
+      - name: Build & Push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          build-args: |
+            APP_ENV=${{ secrets.APP_ENV }}
