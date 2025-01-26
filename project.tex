@@ -13,20 +13,20 @@
 \maketitle
 
 \section{Problem Statement}
-To design, implement, and demonstrate a secure Software Supply Chain framework within DevSecOps CI/CD pipelines by leveraging GitHub Actions, Snyk, CodeCloud, OWASP standards, ArgoCD, and Kubernetes, mitigating supply chain risks and improving software delivery security.
+To design, implement, and demonstrate a secure Software Supply Chain framework within DevSecOps CI/CD pipelines by leveraging GitHub Actions, Snyk, SonarCloud, OWASP standards, ArgoCD, and Kubernetes, mitigating supply chain risks and improving software delivery security.
 
 \section{Review of Related Work}
-The topic of software supply chain security has gained significant attention due to high-profile attacks such as SolarWinds and Log4j. Current approaches, including vulnerability scanning tools like Snyk and static analysis platforms such as CodeCloud, focus on identifying known issues but often lack seamless integration into DevSecOps pipelines. OWASP provides a set of best practices for secure development, yet practical implementations vary widely across organizations. Tools like ArgoCD facilitate secure application delivery to Kubernetes clusters, but their use in holistic supply chain security strategies is underexplored.
-
-While prior work has addressed individual aspects of pipeline security, such as static analysis or Kubernetes security, few studies have combined these elements into a cohesive, automated framework. This project seeks to build upon existing work by integrating these tools and methodologies into a streamlined DevSecOps pipeline, demonstrating practical improvements and scalability.
+Today's business model is based on the speed of creating products, so we must consider security in the software supply chain from the very beginning of the project, the need for which has attracted much attention in recent years, with high-profile attacks such as SolarWinds and Log4j notorious for their impact on business. Current approaches, including vulnerability scanning tools like Snyk and static analysis platforms like SonarCloud, focus on identifying known issues but often lack seamless integration into DevSecOps processes. 
+OWASP provides a set of best practices for secure development, yet practical implementations vary widely across organizations. Tools like ArgoCD facilitate secure application delivery to Kubernetes clusters, but their use in holistic supply chain security strategies is underexplored.
+While prior work has addressed individual aspects of pipeline security, such as static analysis or Kubernetes security, few studies have combined these elements into a cohesive, automated framework like those established by NIST Special Publication 800 NIST SP 800-204D. This project seeks to build upon existing work by integrating these tools and methodologies into a streamlined DevSecOps pipeline, demonstrating practical improvements and scalability.
 
 \section{Project Objective}
 \begin{itemize}
     \item Develop a secure CI/CD pipeline using GitHub Actions.
-    \item Integrate security tools such as Snyk and CodeCloud for automated scanning.
+    \item Integrate security tools such as Snyk and SonarCloud for automated scanning.
     \item Apply OWASP best practices to the pipeline.
     \item Deploy applications securely using ArgoCD and Kubernetes.
-    \item Simulate and mitigate common supply chain attack scenarios.
+    \item Simulate and mitigate common supply chain misconfiguration scenarios.
     \item Document results, challenges, and recommendations.
 \end{itemize}
 
@@ -36,12 +36,12 @@ This project aims to implement a secure Software Supply Chain framework by autom
 \subsection*{Pipeline Setup}
 \begin{itemize}
     \item Create a basic CI/CD pipeline using GitHub Actions.
-    \item Incorporate automated code and dependency scanning tools (Snyk, CodeCloud).
+    \item Incorporate automated code and dependency scanning tools (Snyk, SonarCloud).
 \end{itemize}
 
 \subsection*{Security Enhancements}
 \begin{itemize}
-    \item Implement OWASP best practices for secure development.
+    \item Implement OWASP best practices for secure development (OWASP ZAP (Zed Attack Proxy)).
     \item Set up role-based access control (RBAC) and network policies for Kubernetes.
 \end{itemize}
 
@@ -64,16 +64,16 @@ This project aims to implement a secure Software Supply Chain framework by autom
 
 \section{Resources}
 \subsection*{Tools}
-GitHub Actions, Snyk, CodeCloud, OWASP guidelines, ArgoCD.
+GitHub Actions, Snyk, SonarCloud, OWASP guidelines (OWASP ZAP (Zed Attack Proxy)), ArgoCD.
 
 \subsection*{Software}
 Kubernetes (Minikube/AKS), Docker, secure image repositories.
 
 \subsection*{Hardware}
-Cloud-based or local testing environment (e.g., a VM).
+Cloud-based or local testing environment (Azure or VM).
 
 \subsection*{Data}
-Open-source vulnerable applications (e.g., Juice Shop).
+Open-source vulnerable applications (e.g., Juice Shop) if apply.
 
 \section{Contribution to Knowledge}
 This project will contribute by:
