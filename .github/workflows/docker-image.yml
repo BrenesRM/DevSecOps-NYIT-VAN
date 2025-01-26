@@ -42,13 +42,7 @@ jobs:
         run: |
           docker pull ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-      # 5. scan Docker image
-      - name: Scan Docker image
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
-      # 6. Log build activities
+      # 5. Log build activities
       - name: Log build to file
         if: always()
         run: |
@@ -57,11 +51,23 @@ jobs:
           echo "Commit: ${{ github.sha }}" >> build_audit.log
           echo "Status: ${{ job.status }}" >> build_audit.log
 
-      # 7. Upload audit log as an artifact
+      # 6. Upload audit log as an artifact
       - name: Upload build log
         uses: actions/upload-artifact@v4
         with:
           name: build-audit-log
           path: build_audit.log
+
+  dockertest:
+    name: Run tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      # 1. scan Docker image
+      - name: Scan Docker image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
 
 #----------------------------------------------------------
