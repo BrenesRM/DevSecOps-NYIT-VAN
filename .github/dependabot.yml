@@ -1,0 +1,26 @@
+name: hello-world
+
+# trigger
+on:
+  push:
+    branches: ["main"]
+
+env:
+  TEXT: "Carlos"
+
+# pipeline
+jobs:
+  print:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: print-to-screen
+        run: return 1
+
+      - name: The job has succeded?
+        if: ${{ success() }}
+        run: echo "Job Success !!!!"
+
+      - name: The job has fail
+        if: ${{ failure() }}
+        run: echo "Job Fails xxxxx"
