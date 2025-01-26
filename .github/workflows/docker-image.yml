@@ -43,9 +43,7 @@ jobs:
         with:
           image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-#---------------------------
-
-      # 6. Log build activities
+      # 5. Log build activities
       - name: Log build to file
         if: always()
         run: |
@@ -54,25 +52,11 @@ jobs:
           echo "Commit: ${{ github.sha }}" >> build_audit.log
           echo "Status: ${{ job.status }}" >> build_audit.log
 
-      # 7. Upload audit log as an artifact
+      # 6. Upload audit log as an artifact
       - name: Upload build log
         uses: actions/upload-artifact@v3
         with:
           name: build-audit-log
           path: build_audit.log
 
-      # 8. Create an issue if the build fails
-      - name: Create Issue on Failure
-        if: failure()
-        uses: peter-evans/create-issue-from-file@v4
-        with:
-          title: "Build Failed: ${{ github.run_number }}"
-          content: |
-            The workflow **${{ github.workflow }}** in branch **${{ github.ref }}** has failed.
-            - Job: **${{ github.job }}**
-            - Commit: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
-            - Triggered by: **${{ github.actor }}**
-
-            Please investigate the issue and take necessary actions.
-
-          labels: bug, build
+#----------------------------------------------------------
