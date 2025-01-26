@@ -8,7 +8,7 @@ on:
 
 env:
   DOCKER_REGISTRY: brenesrm
-  IMAGE_NAME: DevSecOps-NYIT-VAN
+  IMAGE_NAME: devsecops-nyit-van
 
 jobs:
   build:
