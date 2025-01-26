@@ -37,12 +37,17 @@ jobs:
           build-args: |
             APP_ENV=${{ secrets.APP_ENV }}
 
-      # 4. scan Docker image
+      # 4. Verify Docker image exists
+      - name: Verify Docker image
+        run: |
+          docker pull ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      # 5. Scan Docker image
       - name: Scan Docker image
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          scan-type: 'fs'
+          scan-type: 'image'
           ignore-unfixed: true
           format: 'sarif'
           output: 'trivy-results.sarif'
