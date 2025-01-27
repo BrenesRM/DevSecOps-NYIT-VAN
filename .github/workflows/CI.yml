@@ -71,6 +71,7 @@ jobs:
 
   CodeAnalyze:
     name: Analyze Python Code
+    needs: dockertest
     runs-on: ubuntu-latest
     steps:
       # 1. Checkout code
