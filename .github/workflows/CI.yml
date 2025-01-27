@@ -42,26 +42,10 @@ jobs:
         run: |
           docker pull ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-      # 5. Log build activities
-      - name: Log build to file
-        if: always()
-        run: |
-          echo "Workflow: ${{ github.workflow }}" >> build_audit.log
-          echo "Branch: ${{ github.ref }}" >> build_audit.log
-          echo "Commit: ${{ github.sha }}" >> build_audit.log
-          echo "Status: ${{ job.status }}" >> build_audit.log
-
-      # 6. Upload audit log as an artifact
-      - name: Upload build log
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-audit-log
-          path: build_audit.log
-
   dockertest:
     name: Run Docker tests
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       # 1. Scan Docker image
       - name: Scan Docker image
@@ -87,5 +71,21 @@ jobs:
       # 3. Perform CodeQL Analysis
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+
+      # Log build activities
+      - name: Log build to file
+        if: always()
+        run: |
+          echo "Workflow: ${{ github.workflow }}" >> build_audit.log
+          echo "Branch: ${{ github.ref }}" >> build_audit.log
+          echo "Commit: ${{ github.sha }}" >> build_audit.log
+          echo "Status: ${{ job.status }}" >> build_audit.log
+
+      # Upload audit log as an artifact
+      - name: Upload build log
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-audit-log
+          path: build_audit.log
 
 # -----------------------------------------------------------
