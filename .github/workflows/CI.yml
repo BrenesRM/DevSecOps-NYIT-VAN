@@ -13,7 +13,7 @@ env:
 jobs:
   build:
     name: Build Image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       # 1. Checkout source code
@@ -88,4 +88,4 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
 
-# ------------------------------------------------------------
+# -----------------------------------------------------------
