@@ -16,6 +16,7 @@ kubectl delete pod argocd-server-74b5b78785-nlhvb (Name pods down)
 kubectl get deployment argocd-server -o yaml (in the directory of the yml location)
 kubectl get pods
 argocd login 127.0.0.1:30080  --insecure --grpc-web --username admin --password mvYfugFrz5z1NGGC
+kubectl logs argocd-server-74b5b78785-xc79p
 
 SSH status
 
