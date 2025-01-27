@@ -69,8 +69,8 @@ jobs:
         with:
           image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-      # 2. Log build activities - Scan Docker image
-      - name: Log build to file - Scan Docker image
+      # 2. Log build activities
+      - name: Log build to file - Run Docker tests
         if: always()
         run: |
           echo "Workflow: ${{ github.workflow }}" >> build_audit.log
@@ -78,8 +78,8 @@ jobs:
           echo "Commit: ${{ github.sha }}" >> build_audit.log
           echo "Status: ${{ job.status }}" >> build_audit.log
 
-      # 3. Upload audit log as an artifact - Scan Docker image
-      - name: Upload build log - Scan Docker image
+      # 3. Upload audit log as an artifact
+      - name: Upload build log - Run Docker tests
         uses: actions/upload-artifact@v4
         with:
           name: build-audit-log
