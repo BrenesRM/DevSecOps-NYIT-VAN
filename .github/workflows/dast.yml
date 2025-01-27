@@ -1,4 +1,4 @@
-name: Security Scan Workflow
+name: Security Dast Scan Workflow
 
 on:
   push:
@@ -17,13 +17,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Docker (start Flask app in a Docker container)
+      # Step 2: Set up Docker (install Docker and Docker Compose)
       - name: Set up Docker
         run: |
-          docker-compose up -d
-          sleep 10  # Wait for the application to fully start
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker --version  # Verify Docker is installed
+          docker-compose --version  # Verify Docker Compose is installed
 
-      # Step 3: Run OWASP ZAP API Scan on your Flask app
+      # Step 3: Build and run Docker containers
+      - name: Start target application
+        run: |
+          docker-compose up -d
+          sleep 10  # Wait for the service to fully start
+
+      # Step 4: Run ZAP API Scan
       - name: Run ZAP API Scan
         uses: zaproxy/action-api-scan@v0.7.0
         with:
