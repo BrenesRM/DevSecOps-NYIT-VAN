@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: PIPELINE-CI
 
 on:
   push:
@@ -68,6 +68,22 @@ jobs:
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      # 2. Log build activities
+      - name: Log build to file
+        if: always()
+        run: |
+          echo "Workflow: ${{ github.workflow }}" >> build_audit.log
+          echo "Branch: ${{ github.ref }}" >> build_audit.log
+          echo "Commit: ${{ github.sha }}" >> build_audit.log
+          echo "Status: ${{ job.status }}" >> build_audit.log
+
+      # 3. Upload audit log as an artifact
+      - name: Upload build log
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-audit-log
+          path: build_audit.log
 
   CodeAnalyze:
     name: Analyze Python Code
