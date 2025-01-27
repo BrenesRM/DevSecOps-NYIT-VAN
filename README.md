@@ -47,44 +47,38 @@ Follow these instructions to set up and run the project locally.
    ```bash
    pip install -r requirements.txt
 
-3. **Set Up the Database:**:
+3. **Set Up the Database**:
    ```bash
    python init_db.py
 
-### Usage
-   ```bash
-   python app.py
-   #Access the Application: Open your browser and navigate to http://localhost:5000.  
-
-
 ### Project Structure
-   ```bash
-   DevSecOps-NYIT-VAN/
-   ├── .github/           # GitHub workflows and configurations
-   ├── argo/              # Argo CD configurations
-   ├── k8s/               # Kubernetes deployment files
-   ├── static/            # Static assets (CSS, images)
-   ├── templates/         # HTML templates
-   ├── tests/             # Test cases
-   ├── Dockerfile         # Docker configuration
-   ├── README.md          # Project documentation
-   ├── app.py             # Main application code
-   ├── init_db.py         # Database initialization script
-   ├── requirements.txt   # Python dependencies
-   └── project.tex        # LaTeX project report
+
+   DevSecOps-NYIT-VAN/  
+   ├── .github/           # GitHub workflows and configurations  
+   ├── argo/              # Argo CD configurations  
+   ├── k8s/               # Kubernetes deployment files  
+   ├── static/            # Static assets (CSS, images)  
+   ├── templates/         # HTML templates  
+   ├── tests/             # Test cases  
+   ├── Dockerfile         # Docker configuration  
+   ├── README.md          # Project documentation  
+   ├── app.py             # Main application code  
+   ├── init_db.py         # Database initialization script  
+   ├── requirements.txt   # Python dependencies  
+   └── project.tex        # LaTeX project report  
 
 ### Contributing
 
-1.Fork the repository.
-2.Create a new branch (git checkout -b feature-branch).
-3.Commit your changes (git commit -m 'Add new feature').
-4.Push to the branch (git push origin feature-branch).
-5.Open a Pull Request.
+1.Fork the repository.  
+2.Create a new branch (git checkout -b feature-branch).  
+3.Commit your changes (git commit -m 'Add new feature').  
+4.Push to the branch (git push origin feature-branch).  
+5.Open a Pull Request.  
 
 ### License
-This project is licensed under the MIT License.
+This project is licensed under the MIT License.  
 
 ### Contact
-For any questions or suggestions, feel free to open an issue or contact the project maintainers.
+For any questions or suggestions, feel free to open an issue or contact the project maintainers.  
 
-Thank you for checking out the DevSecOps-NYIT-VAN project! We hope this repository serves as a valuable resource for understanding and implementing DevSecOps practices.
+Thank you for checking out the DevSecOps-NYIT-VAN project! We hope this repository serves as a valuable resource for understanding and implementing DevSecOps practices.  
