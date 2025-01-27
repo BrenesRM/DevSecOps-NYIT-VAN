@@ -1,46 +1,39 @@
-name: deploy
+name: Security Scan Workflow
 
 on:
   push:
-    branches: ["main"] 
+    branches:
+      - main  # Trigger on pushes to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull requests targeting the main branch
 
 jobs:
-  build:
-    name: SAST Test
-    runs-on: ubuntu-latest
-
-    permissions:
-      security-events: write
-      packages: read
-      actions: read
-      contents: read
+  zap-api-scan:
+    runs-on: ubuntu-latest  # Using an Ubuntu environment
 
     steps:
-      - uses: actions/checkout@v3
-        name: Checkout code
+      # Step 1: Checkout code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: 'python'
+      # Step 2: Set up Docker (start Flask app in a Docker container)
+      - name: Set up Docker
+        run: |
+          docker-compose up -d
+          sleep 10  # Wait for the application to fully start
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-
-  dast:
-    name: ZAP - DAST Test
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write       
-      #continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v3
-        name: Checkout code
-
-      - name: ZAP Scan
+      # Step 3: Run OWASP ZAP API Scan on your Flask app
+      - name: Run ZAP API Scan
         uses: zaproxy/action-api-scan@v0.7.0
-
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://localhost:3000/search?q=123'
+          target: "http://localhost:5000"  # Your Flask app's endpoint
+          format: "openapi"  # Assuming you have an OpenAPI spec
+          fail_on_warn: true  # Fail the build on warnings (optional)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication with ZAP
+
+      # Optional Step: Clean up resources after scanning
+      - name: Shut down Docker containers
+        run: |
+          docker-compose down
