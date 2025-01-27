@@ -26,6 +26,9 @@ sudo systemctl start ssh
 
 -----------------------------------------------------------------------------------------
 
+week 1 - 20-01-2025.
+
+Introduction of the course and sylabus.
 
 week 2 - 27-01-2025.
 
