@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write       
-      continue-on-error: true
+      #continue-on-error: true
 
     steps:
       - uses: actions/checkout@v3
