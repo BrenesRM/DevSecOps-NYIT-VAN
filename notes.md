@@ -22,3 +22,14 @@ SSH status
 
 sudo service ssh status
 sudo systemctl start ssh
+
+
+-----------------------------------------------------------------------------------------
+
+
+week 2 - 27-01-2025.
+
+Feedback from professor:
+
+Review and research pass work academics to find chalanges they already have done.
+chalanges, tools, what people have done
