@@ -1,18 +1,21 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: v1
+kind: Service
 metadata:
-  name: devsecops-app
-  namespace: argocd
+    name: argo-nodeport
+    namespace: argocd
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/brenesrm/devsecops-pipeline
-    targetRevision: main
-    path: k8s
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+  ports:
+  - protocol: TCP
+    port: 8080
+    nodePort: 30080
+    targetPort: 8080
+    resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  selector:
+    app.kubernetes.io/name: argocd-server
+  type: NodePort
