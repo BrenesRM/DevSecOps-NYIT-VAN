@@ -25,32 +25,6 @@ This project aims to demonstrate the implementation of DevSecOps principles by i
 - **Infrastructure as Code**: Kubernetes configurations for deploying the application.
 - **CI/CD Pipeline**: Automated workflows for building, testing, and deploying the application with security scans.
 
-## Getting Started
-
-Follow these instructions to set up and run the project locally.
-
-### Prerequisites
-
-- **Python 3.9**: Ensure Python 3.9 is installed on your system.
-- **Docker**: Required for containerization.
-- **Kubernetes**: For deploying the application.
-- **pip**: Python package installer.
-
-### Installation
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/BrenesRM/DevSecOps-NYIT-VAN.git
-   cd DevSecOps-NYIT-VAN
-
-2. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-
-3. **Set Up the Database**:
-   ```bash
-   python init_db.py
-
 ### Project Structure
 
    DevSecOps-NYIT-VAN/  
