@@ -1,108 +1,115 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
 \usepackage{geometry}
-\geometry{top=1in, bottom=1in, left=1in, right=1in}
 \usepackage{hyperref}
+\usepackage{url}
 
 \title{Project Proposal: Enhancing Software Supply Chain Security in DevSecOps CI/CD Pipelines}
-\author{Marlon Brenes R \\
-        Student ID: 1314316}
-\date{\today}
+\author{
+    \IEEEauthorblockN{Marlon Brenes R}
+    \IEEEauthorblockA{
+        Student ID: 1314316 \\
+        Master's in Cybersecurity \\
+        \href{mailto:marlon.brenes@nyit.edu}{marlon.brenes@nyit.edu}
+    }
+}
+\date{}
 
 \begin{document}
 
 \maketitle
 
+\begin{abstract}
+This project aims to design, implement, and demonstrate a secure Software Supply Chain framework within DevSecOps CI/CD pipelines by leveraging GitHub Actions, Snyk, SonarCloud, OWASP standards, ArgoCD, and Kubernetes. The focus is on mitigating supply chain risks and improving software delivery security through automation and best practices.
+\end{abstract}
+
+\section{Introduction}
+The speed of product development in today's business models requires incorporating security into the software supply chain from the project's inception. High-profile attacks, such as SolarWinds and Log4j, have underscored the critical need for secure processes. Current tools like Snyk and SonarCloud address specific vulnerabilities but often lack seamless integration into DevSecOps processes. This project proposes a cohesive, automated framework that integrates these tools and methodologies, building upon existing work and standards such as NIST SP 800-204D.
+
 \section{Problem Statement}
-To design, implement, and demonstrate a secure Software Supply Chain framework within DevSecOps CI/CD pipelines by leveraging GitHub Actions, Snyk, SonarCloud, OWASP standards, ArgoCD, and Kubernetes, mitigating supply chain risks and improving software delivery security.
+The goal is to create a secure Software Supply Chain framework that automates security integration into a DevSecOps pipeline. This framework will address the limitations of existing solutions by combining tools like GitHub Actions, Snyk, and SonarCloud with best practices from OWASP and secure deployment mechanisms using ArgoCD and Kubernetes.
 
-\section{Review of Related Work}
-Today's business model is based on the speed of creating products, so we must consider security in the software supply chain from the very beginning of the project, the need for which has attracted much attention in recent years, with high-profile attacks such as SolarWinds and Log4j notorious for their impact on business. Current approaches, including vulnerability scanning tools like Snyk and static analysis platforms like SonarCloud, focus on identifying known issues but often lack seamless integration into DevSecOps processes. 
-OWASP provides a set of best practices for secure development, yet practical implementations vary widely across organizations. Tools like ArgoCD facilitate secure application delivery to Kubernetes clusters, but their use in holistic supply chain security strategies is underexplored.
-While prior work has addressed individual aspects of pipeline security, such as static analysis or Kubernetes security, few studies have combined these elements into a cohesive, automated framework like those established by NIST Special Publication 800 NIST SP 800-204D. This project seeks to build upon existing work by integrating these tools and methodologies into a streamlined DevSecOps pipeline, demonstrating practical improvements and scalability.
-
-\section{Project Objective}
+\section{Project Objectives}
 \begin{itemize}
     \item Develop a secure CI/CD pipeline using GitHub Actions.
     \item Integrate security tools such as Snyk and SonarCloud for automated scanning.
     \item Apply OWASP best practices to the pipeline.
-    \item Deploy applications securely using ArgoCD and Kubernetes.
+    \item Securely deploy applications using ArgoCD and Kubernetes.
     \item Simulate and mitigate common supply chain misconfiguration scenarios.
     \item Document results, challenges, and recommendations.
 \end{itemize}
 
-\section{Description and Methodology of the Proposed Project}
-This project aims to implement a secure Software Supply Chain framework by automating the integration of security tools and practices into a DevSecOps pipeline. The proposed methodology includes:
+\section{Methodology}
+The project methodology is divided into the following phases:
 
-\subsection*{Pipeline Setup}
+\subsection{Pipeline Setup}
 \begin{itemize}
-    \item Create a basic CI/CD pipeline using GitHub Actions.
-    \item Incorporate automated code and dependency scanning tools (Snyk, SonarCloud).
+    \item Create a CI/CD pipeline using GitHub Actions.
+    \item Integrate automated tools like Snyk and SonarCloud for code and dependency scanning.
 \end{itemize}
 
-\subsection*{Security Enhancements}
+\subsection{Security Enhancements}
 \begin{itemize}
-    \item Implement OWASP best practices for secure development (OWASP ZAP (Zed Attack Proxy)).
-    \item Set up role-based access control (RBAC) and network policies for Kubernetes.
+    \item Implement OWASP best practices, including OWASP ZAP (Zed Attack Proxy).
+    \item Configure Kubernetes with role-based access control (RBAC) and network policies.
 \end{itemize}
 
-\subsection*{Application Deployment}
+\subsection{Application Deployment}
 \begin{itemize}
-    \item Use ArgoCD for continuous delivery to Kubernetes.
-    \item Ensure deployment security with signed container images and secure configurations.
+    \item Use ArgoCD for continuous delivery to Kubernetes clusters.
+    \item Ensure secure deployments using signed container images and configurations.
 \end{itemize}
 
-\subsection*{Testing and Validation}
+\subsection{Testing and Validation}
 \begin{itemize}
-    \item Simulate supply chain misconfiguration (e.g., incorrect securing development practices).
-    \item Assess pipeline resilience and effectiveness.
+    \item Simulate common supply chain misconfigurations.
+    \item Evaluate the pipeline's resilience and effectiveness.
 \end{itemize}
 
-\subsection*{Documentation and Analysis}
+\subsection{Documentation and Analysis}
 \begin{itemize}
     \item Record methodology, results, challenges, and improvements.
 \end{itemize}
 
 \section{Resources}
-\subsection*{Tools}
-GitHub Actions, Snyk, SonarCloud, OWASP guidelines (OWASP ZAP (Zed Attack Proxy)), ArgoCD.
+\subsection{Tools}
+GitHub Actions, Snyk, SonarCloud, OWASP guidelines (e.g., OWASP ZAP), ArgoCD.
 
-\subsection*{Software}
+\subsection{Software}
 Kubernetes (Minikube/AKS), Docker, secure image repositories.
 
-\subsection*{Hardware}
-Cloud-based or local testing environment (Azure or VM).
+\subsection{Hardware}
+Cloud-based or local testing environments (e.g., Azure or virtual machines).
 
-\subsection*{Data}
-Open-source vulnerable applications (e.g., Juice Shop) if applicable.
+\subsection{Data}
+Open-source vulnerable applications (e.g., OWASP Juice Shop).
 
-\section{Contribution to Knowledge}
-This project will contribute by:
-\begin{itemize}
-    \item Demonstrating a practical, secure DevSecOps pipeline framework.
-    \item Highlighting the integration of diverse security tools and practices.
-    \item Addressing gaps in the seamless automation of supply chain security.
-    \item Providing recommendations for improving software delivery security.
-\end{itemize}
-
-While the project will focus on specific tools and scenarios, its methodology can be generalized for broader use cases. Foreseeable limitations include scalability to large, complex systems, which could be explored in future research.
-
-\section{Project Schedule and Milestone Description}
+\section{Project Schedule}
 \begin{itemize}
     \item \textbf{Week 1-2}: Research and define project scope; set up GitHub Actions.
-    \item \textbf{Week 3-5}: Integrate Snyk and CodeCloud; document initial findings.
-    \item \textbf{Week 6-8}: Apply OWASP practices; set up ArgoCD and Kubernetes.
+    \item \textbf{Week 3-5}: Integrate Snyk and SonarCloud; document initial findings.
+    \item \textbf{Week 6-8}: Apply OWASP best practices; set up ArgoCD and Kubernetes.
     \item \textbf{Week 9-11}: Simulate and test supply chain attacks; refine pipeline security.
-    \item \textbf{Week 12-14}: Document results; finalize paper and project presentation.
+    \item \textbf{Week 12-14}: Document results; finalize project paper and presentation.
 \end{itemize}
 
-\section{References/Bibliography}
+\section{Contribution to Knowledge}
+This project aims to:
 \begin{itemize}
-    \item OWASP. "OWASP ZAP (Zed Attack Proxy)." \url{https://github.com/zaproxy/action-api-scan}
-    \item Snyk. "Vulnerability Scanning for Developers." \url{https://snyk.io}
-    \item CodeCloud. "Static and Dynamic Code Analysis Tools." \url{https://sonarcloud.io}
-    \item ArgoCD. "GitOps Continuous Delivery." \url{https://argoproj.github.io}
-    \item Kubernetes. "Official Documentation." \url{https://kubernetes.io/docs/home/}
-    \item Github - Repository. "Official Repository of the Project." \url{https://github.com/BrenesRM/DevSecOps-NYIT-VAN}
+    \item Demonstrate a secure DevSecOps pipeline framework.
+    \item Highlight the integration of security tools and practices.
+    \item Address automation gaps in supply chain security.
+    \item Provide recommendations for secure software delivery processes.
 \end{itemize}
+
+\section{References}
+\begin{thebibliography}{1}
+    \bibitem{owasp} OWASP, "OWASP ZAP (Zed Attack Proxy)." [Online]. Available: \url{https://github.com/zaproxy/action-api-scan}
+    \bibitem{snyk} Snyk, "Vulnerability Scanning for Developers." [Online]. Available: \url{https://snyk.io}
+    \bibitem{sonarcloud} SonarCloud, "Static and Dynamic Code Analysis Tools." [Online]. Available: \url{https://sonarcloud.io}
+    \bibitem{argocd} ArgoCD, "GitOps Continuous Delivery." [Online]. Available: \url{https://argoproj.github.io}
+    \bibitem{kubernetes} Kubernetes, "Official Documentation." [Online]. Available: \url{https://kubernetes.io/docs/home/}
+    \bibitem{github} GitHub, "Official Repository of the Project." [Online]. Available: \url{https://github.com/BrenesRM/DevSecOps-NYIT-VAN}
+\end{thebibliography}
 
 \end{document}
