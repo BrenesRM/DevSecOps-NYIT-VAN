@@ -8,10 +8,6 @@ Welcome to the DevSecOps-NYIT-VAN project repository! This project is part of th
 
 - [Project Overview](#project-overview)
 - [Features](#features)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Usage](#usage)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
