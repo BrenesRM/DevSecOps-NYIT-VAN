@@ -2,7 +2,7 @@
 
 Welcome to the DevSecOps-NYIT-VAN project repository! This project is part of the INCS-870-VA-2025 course and focuses on integrating security practices within the DevOps pipeline.
 
-![DevSecOps CI/CD Workflow](https://example.com/workflow-diagram.png)
+![DevSecOps CI/CD Workflow](https://github.com/BrenesRM/DevSecOps-NYIT-VAN/blob/main/Documentation/Picture/FrontPage.jpg)
 
 ## Table of Contents
 
