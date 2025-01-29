@@ -1,22 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: DevSecOps-NYIT-VAN
+  name: devsecops-nyit-van
 spec:
   destination:
-    name: ''
-    namespace: kind-demo
     server: https://kubernetes.default.svc
+    namespace: default
   source:
-    path: DevSecOps-NYIT-VAN/overlays/stage/
     repoURL: https://github.com/BrenesRM/DevSecOps-NYIT-VAN.git
-    targetRevision: HEAD
-  sources: []
-  project: default
+    targetRevision: main
+    path: DevSecOps-NYIT-VAN/overlays/stage
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-      - PrunePropagationPolicy=foreground
