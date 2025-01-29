@@ -1,38 +1,38 @@
-Argo CD Setup and Configuration
+Argo CD Guide
 
 Overview
 
-Core Concepts
+Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes. It listens to the OPS repository, which contains Kubernetes YAML files, and applies any detected configuration changes to the cluster.
 
-Argo CD listens to the OPS repository, which contains Kubernetes YAML files. When it detects changes in the configuration, it applies those changes to the cluster.
-
-1. Install ArgoCD
+1. Installing ArgoCD
 
 Installation Guide
 
 kubectl create namespace argocd
 
-# Non-HA Installation
+# Non-HA installation
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 kubectl config set-context --current --namespace=argocd
 watch kubectl get pods
 
-Optional: High Availability (Production)
+Optional: High Availability (HA) Setup
 
-HA Installation
+HA Installation Guide
 
 2. UI Access
 
 2.1. Option 1: NodePort
 
-Create nodeport.yaml:
+Create a NodePort service:
+
+File: nodeport.yaml
 
 apiVersion: v1
 kind: Service
 metadata:
-    name: argo-nodeport
-    namespace: argocd
+  name: argo-nodeport
+  namespace: argocd
 spec:
   ports:
   - protocol: TCP
@@ -43,13 +43,13 @@ spec:
     app.kubernetes.io/name: argocd-server
   type: NodePort
 
-Apply and verify:
+Apply the configuration:
 
 kubectl apply -f nodeport.yaml
 kubectl get svc
 kubectl describe svc argo-nodeport
 
-2.2. Option 2: Port-Forward (Local Cluster)
+2.2. Option 2: Port-forward (Local Cluster)
 
 kubectl -n argocd port-forward $(kubectl -n argocd get pod -l app.kubernetes.io/name=argocd-server -o jsonpath='{.items[0].metadata.name}') 8080:8080
 
@@ -62,7 +62,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 sudo curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
 sudo chmod +x /usr/local/bin/argocd
 
-Or using Homebrew:
+Alternatively, use Homebrew:
 
 brew install argocd
 
@@ -70,7 +70,7 @@ brew install argocd
 
 argocd login <DOMAIN>:30080 --insecure --grpc-web --username admin --password <ADMIN_PASSWORD>
 
-Or using port-forward:
+For port-forwarding:
 
 argocd login --port-forward
 
@@ -82,7 +82,7 @@ argocd app list
 
 Navigate to Settings → Repositories
 
-Connect the OPS repository using SSH
+Connect Repo Using SSH (Git "OPS" repo)
 
 Name: ops
 
@@ -98,19 +98,19 @@ Sync Options
 
 5.1. Option 1: UI
 
-Navigate to Applications → Create Application
+Applications → Create Application
 
 Name: stage-public-api
 
-Sync: Automated
+Sync Automated
 
-Prune: True
+Prune: true
 
-SelfHeal: True
+SelfHeal: true
 
-Auto-create namespace
+Auto-create Namespace
 
-Repository URL: git@github.com:<user>/ops.git
+Repository URL: git@github.com:<user>/<project>.git
 
 Path: public-api/overlays/stage/
 
@@ -120,17 +120,15 @@ Namespace: public-stage
 
 5.2. View YAML and Copy
 
-Paste into ops/argo-apps/public-api-stage.yaml
+Paste into: ops/argo-apps/public-api-stage.yaml
 
 5.3. Create Application
 
-Check App Status, Diagram, and Details
+Check App Status, App Diagram, App Details, Pod Details, and Sync Status
 
-Check Pod Details and Sync Status
+Sync Forced
 
-Force Sync if necessary
-
-Ingress Progressing Troubleshooting
+Ingress Progressing Issues
 
 5.4. Manual Scaling
 
@@ -139,20 +137,19 @@ kubectl scale --replicas 1 deploy public-api -n public-stage
 5.5. Edit Replicas in GitHub
 
 git add .
-git commit -m "Update deployment replicas"
+git commit -m "update deployment replicas"
 git push origin main
 
 5.6. Check ArgoCD UI Applications
 
-5.7. Sync Git Repo
+5.7. Sync Git Repository
 
 argocd app sync --project default
-# OR
 argocd app sync stage-public-api
 
-5.8. Check Running Pods
+5.8. Check Pods Running 2 Replicas
 
-Wait ~3 minutes for auto-sync.
+Wait 3 minutes for auto-sync.
 
 argocd app sync <APP_NAME>
 
@@ -166,29 +163,40 @@ argocd app delete <APP_NAME>
 
 6. Optional: App of Apps Pattern
 
-Create a new folder in the OPS repo: /argo-apps
+New Folder in OPS Repo: /argo-apps
 
 Add stage-public-api.yaml to /argo-apps
 
-Commit & Push changes to GitHub
+Commit & Push to GitHub
 
-Delete stage-public-api Argo application
+Delete stage-public-api Argo Application
 
-Create a new application named argo-apps
+Create a New Application: argo-apps
 
-Repository Path: argo-apps
+Name: argo-apps
+
+Project: default
+
+Sync: auto
+
+Prune: true
+
+Self Heal: true
+
+Path: argo-apps
 
 Namespace: argocd
 
-Sync Auto, Prune, Self-Heal enabled
+Copy and paste the YAML configuration to /argo-apps/app-of-apps.yaml.
 
 7. Optional: Expose Argo via Ingress
 
-Ingress YAML
+YAML Configuration
+GKE Load Balancer
 
 8. Optional: Administration
 
-8.1. Users
+8.1. User Management
 
 User Management
 RBAC
@@ -208,13 +216,10 @@ Username: admin
 kubectl apply -f assets/argo/cm-users.yaml
 argocd account update-password --account <name> --current-password <admin-password> --new-password <new-user-password> --port-forward
 
-kubectl get cm argocd-rbac-cm
-kubectl apply -f assets/argo/argocd-rbac-cm.yaml
-
 8.4. Disable Admin User
 
-Edit cm-users.yaml:
+Modify cm-users.yaml:
 
 admin.enabled: "false"
 
-8.5. Logout and Login with New User
+8.5. Logout & Login as New User
