@@ -12,7 +12,7 @@ spec:
     repoURL: https://github.com/BrenesRM/DevSecOps-NYIT-VAN.git
     targetRevision: HEAD
   sources: []
-  project: ''
+  project: default
   syncPolicy:
     automated:
       prune: true
