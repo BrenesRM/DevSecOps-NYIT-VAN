@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stage-public-api
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: public-stage
+  source:
+    repoURL: https://github.com/BrenesRM/DevSecOps-NYIT-VAN.git
+    targetRevision: main
+    path: deploy.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
