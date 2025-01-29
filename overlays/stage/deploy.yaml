@@ -1,16 +1,40 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: devsecops-nyit-van
+  namespace: argocd  # Ensure this matches your desired namespace
+
 spec:
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: default
-  source:
-    repoURL: https://github.com/BrenesRM/DevSecOps-NYIT-VAN.git
-    targetRevision: main
-    path: DevSecOps-NYIT-VAN/overlays/stage
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devsecops-nyit-van
+  template:
+    metadata:
+      labels:
+        app: devsecops-nyit-van
+    spec:
+      # If using a private registry, uncomment below and create a secret named "regcred"
+      # imagePullSecrets:
+      #   - name: regcred
+
+      containers:
+      - name: devsecops-nyit-van
+        image: brenesrm/devsecops-nyit-van:latest  # Update as needed
+        imagePullPolicy: IfNotPresent  # Ensures it only pulls if the image isn't available
+
+        ports:
+        - containerPort: 3000
+          name: http  # Matches the container service
+
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
+        envFrom:
+          - configMapRef:
+              name: devsecops-config  # Ensure this ConfigMap exists
