@@ -12,3 +12,13 @@ Click Connect to add the repository.
 kubectl get apps -n argocd
 
 argocd app sync --project default
+
+kubectl get svc
+kubectl describe svc argo-nodeport
+argocd app list
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
+
+argocd app get devsecops-nyit-van
+argocd app resources devsecops-nyit-van
+argocd app history devsecops-nyit-van
+
