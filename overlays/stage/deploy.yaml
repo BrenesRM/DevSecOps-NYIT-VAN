@@ -5,7 +5,7 @@ metadata:
   namespace: argocd  # Ensure this matches your desired namespace
 
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: devsecops-nyit-van
