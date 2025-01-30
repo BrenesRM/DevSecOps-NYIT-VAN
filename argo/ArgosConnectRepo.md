@@ -22,3 +22,5 @@ argocd app get devsecops-nyit-van
 argocd app resources devsecops-nyit-van
 argocd app history devsecops-nyit-van
 
+kubectl get namespaces
+

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: devsecops-nyit-van
-  namespace: argocd  # Ensure this matches your desired namespace
+  namespace: argocd # Or devsecops-project, ensure consistency with Argo CD Application
 
 spec:
   replicas: 2
@@ -14,27 +14,39 @@ spec:
       labels:
         app: devsecops-nyit-van
     spec:
-      # If using a private registry, uncomment below and create a secret named "regcred"
-      # imagePullSecrets:
-      #   - name: regcred
+      imagePullSecrets: # Only uncomment if using a private registry
+        - name: regcred # Create this secret in your namespace
 
       containers:
-      - name: devsecops-nyit-van
-        image: brenesrm/devsecops-nyit-van:latest  # Update as needed
-        imagePullPolicy: IfNotPresent  # Ensures it only pulls if the image isn't available
+        - name: devsecops-nyit-van
+          image: brenesrm/devsecops-nyit-van:latest # Use a specific tag!  Replace v1.0.0 with an actual tag or commit SHA
+          imagePullPolicy: IfNotPresent
 
-        ports:
-        - containerPort: 5000
-          name: http  # Matches the container service
+          ports:
+            - containerPort: 5000
+              name: http
 
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
 
-        envFrom:
-          - configMapRef:
-              name: devsecops-config  # Ensure this ConfigMap exists
+          envFrom:
+            - configMapRef:
+                name: devsecops-config # Ensure this ConfigMap exists
+
+          livenessProbe:
+            httpGet:
+              path: /healthz # Or your health check endpoint
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready # Or your readiness check endpoint
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
