@@ -46,5 +46,5 @@ spec:
     - protocol: TCP
       port: 80        # External port exposed
       targetPort: 5000 # Port on the container
-      nodePort: 30080  # NodePort to access the service externally
+      nodePort: 30081  # NodePort to access the service externally
   type: NodePort
