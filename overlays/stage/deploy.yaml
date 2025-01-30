@@ -24,7 +24,7 @@ spec:
         imagePullPolicy: IfNotPresent  # Ensures it only pulls if the image isn't available
 
         ports:
-        - containerPort: 3000
+        - containerPort: 5000
           name: http  # Matches the container service
 
         resources:
