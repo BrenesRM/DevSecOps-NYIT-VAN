@@ -7,3 +7,8 @@ Click the Connect Repo button.
 Choose Git as the repository type.
 Enter your GitHub repository URL, and provide your GitHub username and token for authentication.
 Click Connect to add the repository.
+
+
+kubectl get apps -n argocd
+
+argocd app sync --project default
