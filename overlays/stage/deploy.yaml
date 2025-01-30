@@ -33,3 +33,17 @@ spec:
             requests:
               cpu: 100m
               memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devsecops-nyit-van-service
+  namespace: devsecops-project
+spec:
+  selector:
+    app: devsecops-nyit-van
+  ports:
+    - protocol: TCP
+      port: 80        # External port exposed
+      targetPort: 5000 # Port on the container
+  type: LoadBalancer  # Use ClusterIP if you only need internal access

@@ -14,6 +14,12 @@ kubectl get namespaces
 kubectl get svc
 kubectl describe svc argo-nodeport
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
+kubectl create namespace devsecops-project
+kubectl port-forward pod/devsecops-nyit-van-75dd7946d4-w9qqp 5000:5000 -n devsecops-project
+kubectl get pods -n devsecops-project
+kubectl describe deployment devsecops-nyit-van -n devsecops-project
+kubectl get deployment devsecops-nyit-van -n devsecops-project
+
 
 argocd app sync --project default
 argocd app list
