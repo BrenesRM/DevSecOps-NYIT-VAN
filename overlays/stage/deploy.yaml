@@ -46,4 +46,5 @@ spec:
     - protocol: TCP
       port: 80        # External port exposed
       targetPort: 5000 # Port on the container
-  type: LoadBalancer  # Use ClusterIP if you only need internal access
+      nodePort: 30080  # NodePort to access the service externally
+  type: NodePort
