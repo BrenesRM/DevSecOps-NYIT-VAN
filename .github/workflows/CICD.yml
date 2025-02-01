@@ -58,7 +58,7 @@ jobs:
   check-secrets:
     name: Secrets Management Analysis
     needs: dockertest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
