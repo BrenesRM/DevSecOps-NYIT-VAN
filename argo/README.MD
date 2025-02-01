@@ -223,3 +223,5 @@ Modify cm-users.yaml:
 admin.enabled: "false"
 
 8.5. Logout & Login as New User
+
+argocd repo add https://github.com/BrenesRM/DevSecOps-NYIT-VAN.git --username <github-username> --password <github-token> --name <repo-name>
