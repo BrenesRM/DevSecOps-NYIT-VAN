@@ -6,6 +6,7 @@ on:
   pull_request:
     branches: [ "main" ]
 
+# This part is intentional and needs to be scanned for exposed secrets.
 env:
   DOCKER_REGISTRY: brenesrm
   IMAGE_NAME: devsecops-nyit-van
