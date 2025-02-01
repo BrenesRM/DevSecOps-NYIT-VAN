@@ -82,9 +82,15 @@ jobs:
             detect-secrets scan > .secrets.baseline
           fi
 
-      - name: Secret Scanner
-        run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
-        
+      - name: Run Secret Scanner
+        run: detect-secrets scan --baseline .secrets.baseline > secrets-results.sarif || true  # Allow process to continue
+
+      # 3. Upload Secrets Scan Results to GitHub Security tab
+      - name: Upload Secret Scan Results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'secrets-results.sarif'
+
   CodeAnalyze:
     name: Static Application Security Testing (SAST)
     needs: dockertest
