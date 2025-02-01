@@ -119,3 +119,63 @@ kind-worker3         Ready    <none>          6m13s   v1.27.3
 
 Your Kubernetes environment is now set up and ready for use!
 
+
+Install MetalLB (LoadBalancer for Kind)
+
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
+
+Wait for MetalLB to be ready:
+
+kubectl get pods -n metallb-system
+
+Create a MetalLB IP Pool
+
+nano metallb-config.yaml
+
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: first-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.1.100-192.168.1.200
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: first-advertisement
+  namespace: metallb-system
+cat: cat: No such file or directory
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: first-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.1.100-192.168.1.200
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: first-advertisement
+  namespace: metallb-system
+
+
+Deploy Web Test App.
+
+kubectl apply -f web-test.yaml
+
+kubectl get svc web-test-service
+
+kubectl run test --rm -it --image=alpine -- sh
+apk add curl
+curl web-test-service
+
+kubectl get pods -n metallb-system
+
+
+Test Localy.
+
+http://10.0.0.10:30080/
