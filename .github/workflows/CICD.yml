@@ -62,17 +62,17 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install Detect Secrets
-        run: pip install detect-secrets  # Ensure the tool is installed
+        run: pip install detect-secrets  # Ensure detect-secrets is installed
 
       - name: Generate Secrets Baseline (if missing)
         run: |
           if [ ! -f ".secrets.baseline" ]; then
-            detect-secrets scan --baseline .secrets.baseline
+            detect-secrets scan > .secrets.baseline
           fi
 
       - name: Secret Scanner
-        run: detect-secrets scan --baseline .secrets.baseline || true  # Continue even if secrets are found
-
+        run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
+        
   CodeAnalyze:
     name: Analyze Python Code
     needs: check-secrets
