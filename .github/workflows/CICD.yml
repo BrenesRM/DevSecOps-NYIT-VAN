@@ -76,8 +76,8 @@ jobs:
         run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
         
   CodeAnalyze:
-    name: Analyze Python Code
-    needs: check-secrets
+    name: Static Code Analysis
+    needs: dockertest
     runs-on: ubuntu-latest
     steps:
       # 1. Checkout code
