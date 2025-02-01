@@ -45,7 +45,7 @@ jobs:
           docker pull ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
   dockertest:
-    name: Run Docker tests
+    name: Container Vulnerability Scanning Test
     needs: build
     runs-on: ubuntu-24.04
     steps:
@@ -56,7 +56,7 @@ jobs:
           image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
   check-secrets:
-    name: Checking for Secrets
+    name: Secrets Management Analysis
     needs: dockertest
     runs-on: ubuntu-latest
     steps:
@@ -76,7 +76,7 @@ jobs:
         run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
         
   CodeAnalyze:
-    name: Static Code Analysis
+    name: Static Application Security Testing (SAST)
     needs: dockertest
     runs-on: ubuntu-latest
     steps:
