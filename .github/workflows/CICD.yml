@@ -10,6 +10,7 @@ on:
 env:
   DOCKER_REGISTRY: brenesrm
   IMAGE_NAME: devsecops-nyit-van
+  PASSWORD: "PuraVida!"
 
 jobs:
   build:
