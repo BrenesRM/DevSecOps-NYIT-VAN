@@ -73,34 +73,17 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Install Detect Secrets & SARIF Tools
-        run: |
-          pip install detect-secrets sarif-tools jq
+      - name: Install Detect Secrets
+        run: pip install detect-secrets  # Ensure detect-secrets is installed
 
-      - name: Run Secret Scanner
-        run: detect-secrets scan --baseline .secrets.baseline > secrets-results.json || true  # Save JSON
-
-      - name: Validate Secret Scan Output
+      - name: Generate Secrets Baseline (if missing)
         run: |
-          if [ ! -s secrets-results.json ]; then
-            echo "No secrets found. Generating empty SARIF report."
-            echo '{"version": "2.1.0", "runs": [{"tool": {"driver": {"name": "detect-secrets", "rules": []}}, "results": []}]}' > secrets-results.sarif
-          else
-            cat secrets-results.json | jq -r '
-            {
-              "version": "2.1.0",
-              "runs": [{
-                "tool": { "driver": { "name": "detect-secrets", "informationUri": "https://github.com/Yelp/detect-secrets", "rules": [] }},
-                "results": []
-              }]
-            }' > secrets-results.sarif
+          if [ ! -f ".secrets.baseline" ]; then
+            detect-secrets scan > .secrets.baseline
           fi
 
-      - name: Upload Secret Scan Results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'secrets-results.sarif'
-
+      - name: Secret Scanner
+        run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
 
   CodeAnalyze:
     name: Static Application Security Testing (SAST)
