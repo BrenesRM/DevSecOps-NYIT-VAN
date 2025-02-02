@@ -7,12 +7,18 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Welcome to the Vulnerable Flask Application</h1>
-    <p>Explore the vulnerabilities:</p>
-    <ul>
-        <li><a href="/xss">Cross-Site Scripting (XSS)</a></li>
-        <li><a href="/user/admin">SQL Injection</a></li>
-        <li><a href="/deserialize" target="_blank">Insecure Deserialization</a></li>
-    </ul>
+    <div class="container">
+        <header>
+            <h1>Welcome to the Vulnerable Flask Application</h1>
+        </header>
+        <section>
+            <p>Explore the vulnerabilities:</p>
+            <ul>
+                <li><a href="/xss" class="btn">Cross-Site Scripting (XSS)</a></li>
+                <li><a href="/user/admin" class="btn">SQL Injection</a></li>
+                <li><a href="/deserialize" class="btn" target="_blank">Insecure Deserialization</a></li>
+            </ul>
+        </section>
+    </div>
 </body>
 </html>
