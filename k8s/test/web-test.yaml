@@ -16,8 +16,7 @@ spec:
     spec:
       containers:
       - name: web-test
-      #- name: devsecops-nyit-van
-        image: brenesrm/devsecops-nyit-van:latest
+        image: nginx
         ports:
         - containerPort: 80
 ---
