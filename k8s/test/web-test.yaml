@@ -25,10 +25,11 @@ kind: Service
 metadata:
   name: web-test-service
 spec:
-  type: LoadBalancer
+  type: NodePort  # Changed from LoadBalancer to NodePort
   selector:
     app: web-test
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
+      nodePort: 30081  # Expose the service on port 30081 on the node
