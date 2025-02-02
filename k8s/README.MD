@@ -179,3 +179,10 @@ kubectl get pods -n metallb-system
 Test Localy.
 
 http://10.0.0.10:30080/
+
+
+another test:
+
+kubectl run -it --rm debug --image=busybox --restart=Never -- sh
+wget -O- http://10.96.129.181  # Test ClusterIP
+wget -O- http://192.168.1.100  # Test LoadBalancer
