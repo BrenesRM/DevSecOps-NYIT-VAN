@@ -2,8 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: devsecops-nyit-van
-  namespace: devsecops-project # Or devsecops-project, ensure consistency with Argo CD Application
-
+  namespace: devsecops-project
+  labels:
+    app: devsecops-nyit-van
 spec:
   replicas: 2
   selector:
@@ -14,25 +15,19 @@ spec:
       labels:
         app: devsecops-nyit-van
     spec:
-      imagePullSecrets: # Only uncomment if using a private registry
-        - name: regcred # Create this secret in your namespace
-
       containers:
-        - name: devsecops-nyit-van
-          image: brenesrm/devsecops-nyit-van:latest # Use a specific tag!  Replace v1.0.0 with an actual tag or commit SHA
-          imagePullPolicy: IfNotPresent
-
-          ports:
-            - containerPort: 5000
-              name: http
-
-          resources:
-            limits:
-              cpu: 200m
-              memory: 256Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
+      - name: devsecops-nyit-van
+        image: brenesrm/devsecops-nyit-van:latest
+        ports:
+        - containerPort: 5000
+          name: http
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
 ---
 apiVersion: v1
 kind: Service
@@ -44,7 +39,7 @@ spec:
     app: devsecops-nyit-van
   ports:
     - protocol: TCP
-      port: 80        # External port exposed
-      targetPort: 5000 # Port on the container
-      nodePort: 30081  # NodePort to access the service externally
+      port: 80
+      targetPort: 5000
+      nodePort: 30081
   type: NodePort
