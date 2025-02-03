@@ -136,8 +136,8 @@ def no_rate_limit():
 @app.route("/")
 def home():
     return render_template_string("""
-    <h1>Welcome to the Secure Flask Application</h1>
-    <p>Explore the secure routes:</p>
+    <h1>Welcome to the insecure Flask Application</h1>
+    <p>Explore the insecure routes:</p>
     <ul>
         <li><a href="/xss">Cross-Site Scripting (XSS)</a></li>
         <li><a href="/user/admin">SQL Injection</a></li>
