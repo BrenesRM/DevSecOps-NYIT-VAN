@@ -20,21 +20,21 @@
 \maketitle
 
 \begin{abstract}
-This project aims to design, implement, and demonstrate a secure Software Supply Chain framework within DevSecOps CI/CD pipelines by leveraging GitHub Actions, Snyk, SonarCloud, OWASP standards, ArgoCD, and Kubernetes. The focus is on mitigating supply chain risks and improving software delivery security through automation and best practices.
+This project designs and implements a insecure Software Supply Chain framework within DevSecOps CI/CD pipelines, focusing on mitigating supply chain risks through automation. The scope is limited to alarm and monitoring, ensuring real-time threat detection and response within the pipeline.
 \end{abstract}
 
 \section{Introduction}
-The speed of product development in today's business models requires incorporating security into the software supply chain from the project's inception. High-profile attacks, such as SolarWinds and Log4j, have underscored the critical need for secure processes. Current tools like Snyk and SonarCloud address specific vulnerabilities but often lack seamless integration into DevSecOps processes. This project proposes a cohesive, automated framework that integrates these tools and methodologies, building upon existing work and standards such as NIST SP 800-204D.
+The speed of product development in today's business models requires incorporating security into the software supply chain from the project's inception. High-profile attacks, such as SolarWinds and Log4j, have underscored the critical need for secure processes. The current tools indicated by OWASP address specific vulnerabilities, but often lack seamless integration into DevSecOps processes. This project proposes a cohesive, automated framework that integrates these tools and methodologies, building on existing work and standards such as NIST SP 800-204D.
 
 \section{Problem Statement}
-The goal is to create a secure Software Supply Chain framework that automates security integration into a DevSecOps pipeline. This framework will address the limitations of existing solutions by combining tools like GitHub Actions, Snyk, and SonarCloud with best practices from OWASP and secure deployment mechanisms using ArgoCD and Kubernetes.
+The goal is to develop an insecure software supply chain framework that automates the integration of security stages into a DevSecOps pipeline. This framework will intentionally demonstrate the vulnerabilities and weaknesses of existing solutions by combining tools like GitHub Actions, Secrets Management, Linting Code (best practices), Vulnerability Scanning, Static Application Security Testing (SAST), Dynamic Application Security Testing (DAST), Interactive Application Security Testing (IAST), Infrastructure Vulnerability Scanning, and Container Vulnerability Scanning with anti-patterns from OWASP and insecure deployment mechanisms using ArgoCD and Kubernetes.
 
 \section{Project Objectives}
 \begin{itemize}
-    \item Develop a secure CI/CD pipeline using GitHub Actions.
-    \item Integrate security tools such as Snyk and SonarCloud for automated scanning.
-    \item Apply OWASP best practices to the pipeline.
-    \item Securely deploy applications using ArgoCD and Kubernetes.
+    \item Develop an insecure CI/CD pipeline using GitHub Actions.
+    \item Integrate automated security for scanning and alerting.
+    \item OWASP best practices for scanning into the pipeline.
+    \item Deploy applications using ArgoCD and Kubernetes.
     \item Simulate and mitigate common supply chain misconfiguration scenarios.
     \item Document results, challenges, and recommendations.
 \end{itemize}
@@ -45,7 +45,7 @@ The project methodology is divided into the following phases:
 \subsection{Pipeline Setup}
 \begin{itemize}
     \item Create a CI/CD pipeline using GitHub Actions.
-    \item Integrate automated tools like Snyk and SonarCloud for code and dependency scanning.
+    \item Integrate automated tools for continuous scanning and alerts for code and dependency scanning.
 \end{itemize}
 
 \subsection{Security Enhancements}
@@ -63,7 +63,7 @@ The project methodology is divided into the following phases:
 \subsection{Testing and Validation}
 \begin{itemize}
     \item Simulate common supply chain misconfigurations.
-    \item Evaluate the pipeline's resilience and effectiveness.
+    \item Evaluate the resilience and effectiveness of the pipeline.
 \end{itemize}
 
 \subsection{Documentation and Analysis}
@@ -73,7 +73,7 @@ The project methodology is divided into the following phases:
 
 \section{Resources}
 \subsection{Tools}
-GitHub Actions, Snyk, SonarCloud, OWASP guidelines (e.g., OWASP ZAP), ArgoCD.
+GitHub Actions, Snyk, CodeQL, Trivy, Detect-Secrets, OWASP guidelines (e.g., OWASP ZAP), ArgoCD.
 
 \subsection{Software}
 Kubernetes (Minikube/AKS), Docker, secure image repositories.
@@ -82,15 +82,15 @@ Kubernetes (Minikube/AKS), Docker, secure image repositories.
 Cloud-based or local testing environments (e.g., Azure or virtual machines).
 
 \subsection{Data}
-Open-source vulnerable applications (e.g., OWASP Juice Shop).
+Open-source vulnerable applications (e.g., Insecure web App).
 
 \section{Project Schedule}
 \begin{itemize}
     \item \textbf{Week 1-2}: Research and define project scope; set up GitHub Actions.
-    \item \textbf{Week 3-5}: Integrate Snyk and SonarCloud; document initial findings.
-    \item \textbf{Week 6-8}: Apply OWASP best practices; set up ArgoCD and Kubernetes.
+    \item \textbf{Week 3-5}: Integrate Snyk and CodeQL; document initial findings.
+    \item \textbf{Week 6-8}: Find vulnerabilities with OWASP best practices; set up ArgoCD and Kubernetes.
     \item \textbf{Week 9-11}: Simulate and test supply chain attacks; refine pipeline security.
-    \item \textbf{Week 12-14}: Document results; finalize project paper and presentation.
+    \item \textbf{Week 12-14}: Document results; finalize project document and presentation.
 \end{itemize}
 
 \section{Contribution to Knowledge}
@@ -106,7 +106,7 @@ This project aims to:
 \begin{thebibliography}{1}
     \bibitem{owasp} OWASP, "OWASP ZAP (Zed Attack Proxy)." [Online]. Available: \url{https://github.com/zaproxy/action-api-scan}
     \bibitem{snyk} Snyk, "Vulnerability Scanning for Developers." [Online]. Available: \url{https://snyk.io}
-    \bibitem{sonarcloud} SonarCloud, "Static and Dynamic Code Analysis Tools." [Online]. Available: \url{https://sonarcloud.io}
+    \bibitem{CodeQL} CodeQL, "Static Code Analysis Tools." [Online]. Available: \url{https://codeql.github.com/}
     \bibitem{argocd} ArgoCD, "GitOps Continuous Delivery." [Online]. Available: \url{https://argoproj.github.io}
     \bibitem{kubernetes} Kubernetes, "Official Documentation." [Online]. Available: \url{https://kubernetes.io/docs/home/}
     \bibitem{github} GitHub, "Official Repository of the Project." [Online]. Available: \url{https://github.com/BrenesRM/DevSecOps-NYIT-VAN}
