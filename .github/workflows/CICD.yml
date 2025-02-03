@@ -66,25 +66,27 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
   zap_scan:
-    name: Dynamic Application Security Testing (DAST) with OWASP ZAP
+    name: OWASP ZAP Security Scan
     needs: dockertest
     runs-on: ubuntu-24.04
+
     steps:
-      - name: Start the Web Application (Your API)
-        run: |
-          docker run -d -p 5000:80 --name web-app ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          sleep 10 # Wait for the app to be ready
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
-          docker run --rm -v $(pwd):/zap/wrk:rw -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:5000 -r zap_report.html
+          docker run -v $(pwd):/zap/wrk/:rw \
+            -t owasp/zap2docker-stable zap-baseline.py \
+            -t http://localhost:5000 \
+            -r zap_report.html
 
-      - name: Upload ZAP Scan Report as an Artifact
+      - name: Upload OWASP ZAP Report
         uses: actions/upload-artifact@v4
         with:
-          name: OWASP-ZAP-Report
+          name: zap-security-report
           path: zap_report.html
-
+        
   check-secrets:
     name: Secrets Management Analysis
     needs: dockertest
