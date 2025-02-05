@@ -1,0 +1,6 @@
+Docker hardening tools and strategies:
+
+Cosign:
+
+Installation: Cosign is a command-line tool. Your students can install it on their development machines. Provide them with the installation instructions for their operating system (usually just downloading a binary).
+
