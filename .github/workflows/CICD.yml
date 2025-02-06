@@ -141,14 +141,13 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+      - uses: actions/checkout@master
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/docker@0.3.0
-        continue-on-error: true
+        uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          args: test --severity-threshold=high
+          command: monitor
         
 
 # -----------------------------------------------------------
