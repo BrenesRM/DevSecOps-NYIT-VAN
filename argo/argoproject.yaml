@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nyit-van-project
+spec:
+  destination:
+    name: ''
+    namespace: nyit-van-project-ns
+    server: https://kubernetes.default.svc
+  source:
+    path: k8s/test
+    repoURL: https://github.com/BrenesRM/DevSecOps-NYIT-VAN.git
+    targetRevision: HEAD
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
