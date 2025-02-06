@@ -121,7 +121,7 @@ jobs:
           path: build_audit.log
 
   security_snyk:
-    name: Dynamic Application Security Testing (DAST)
+    name: Dynamic Application Security Testing (DAST - SAST - SAC)
     needs: CodeAnalyze
     runs-on: ubuntu-latest
     steps:
