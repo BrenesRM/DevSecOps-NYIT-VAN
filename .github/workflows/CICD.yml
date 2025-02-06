@@ -131,19 +131,23 @@ jobs:
       - name: Install Snyk CLI
         run: npm install -g snyk
 
-      - name: Authenticate Snyk
-        run: snyk auth
+      - name: Debug SNYK_TOKEN
+        run: echo "SNYK_TOKEN is set"
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-      - name: Run Snyk Container Security Scan
+      - name: Authenticate Snyk
+        run: snyk auth $SNYK_TOKEN
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/docker@master
         continue-on-error: true
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} 
         with:
           image: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          args: test --severity-threshold=high --file=Dockerfile
         
 
 # -----------------------------------------------------------
