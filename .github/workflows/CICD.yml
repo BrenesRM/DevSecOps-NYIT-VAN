@@ -86,30 +86,30 @@ jobs:
         run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
 
   AI_Security_Review:
-    name: AI-Powered Security Review
-    needs: dockertest
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Run GitHub Copilot Security Scan
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: 'python'
+
+      - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          languages: python
-          category: security
-
-      - name: AI Security Fix Suggestions
-        run: |
-          echo "Generating AI-assisted security recommendations..."
-          echo "Review security reports and apply fixes suggested by Copilot."
-
-      - name: Upload AI Security Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: ai-security-report
-          path: codeql-results.sarif
-
+          category: 'security'
+          output: '../results'
+          upload: 'always'
+          cleanup-level: 'brutal'
+          add-snippets: 'false'
+          skip-queries: 'false'
+          checkout_path: '${{ github.workspace }}'
+          upload-database: 'true'
+          wait-for-processing: 'true'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
   security_snyk:
     name: Dynamic Application Security Testing (DAST - SAST - SAC)
     needs: AI_Security_Review
