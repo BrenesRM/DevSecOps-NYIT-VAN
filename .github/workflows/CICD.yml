@@ -86,6 +86,7 @@ jobs:
         run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
 
   AI_Security_Review:
+    needs: dockertest
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -109,7 +110,7 @@ jobs:
           upload-database: 'true'
           wait-for-processing: 'true'
           token: ${{ secrets.GITHUB_TOKEN }}
-          
+
   security_snyk:
     name: Dynamic Application Security Testing (DAST - SAST - SAC)
     needs: AI_Security_Review
