@@ -1,0 +1,35 @@
+name: AI Security Review
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  AI_Security_Review:
+    needs: dockertest  # Makes sure this job runs after the dockertest job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: 'python'  # Specify the language to analyze (e.g., python)
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: 'security'  # Specify the analysis category (security)
+          output: 'results'  # Specify output directory
+          upload: 'always'  # Upload results to GitHub Security tab
+          cleanup-level: 'brutal'  # Clean up the database after the scan
+          add-snippets: 'false'  # Do not add code snippets to the results
+          skip-queries: 'false'  # Run all queries (no skipping)
+          checkout_path: '${{ github.workspace }}'  # Path for the CodeQL database
+          upload-database: 'true'  # Upload the CodeQL database
+          wait-for-processing: 'true'  # Wait for processing to complete before finishing the job
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
+
