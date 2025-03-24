@@ -12,7 +12,6 @@ env:
 
 jobs:
   AI_Security_Review:
-    needs: dockertest  # Ensures this job runs after the dockertest job
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
