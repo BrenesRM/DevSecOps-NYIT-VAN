@@ -1,11 +1,15 @@
 name: AI Security Review
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+    push:
+      branches: [ "main" ]
+    pull_request:
+      branches: [ "main" ]
+  
+  env:
+    DOCKER_REGISTRY: brenesrm
+    IMAGE_NAME: devsecops-nyit-van
+  
 jobs:
   AI_Security_Review:
     needs: dockertest  # Makes sure this job runs after the dockertest job
