@@ -1,18 +1,18 @@
 name: AI Security Review
 
 on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
-  
-  env:
-    DOCKER_REGISTRY: brenesrm
-    IMAGE_NAME: devsecops-nyit-van
-  
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  DOCKER_REGISTRY: brenesrm
+  IMAGE_NAME: devsecops-nyit-van
+
 jobs:
   AI_Security_Review:
-    needs: dockertest  # Makes sure this job runs after the dockertest job
+    needs: dockertest  # Ensures this job runs after the dockertest job
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -36,4 +36,3 @@ jobs:
           upload-database: 'true'  # Upload the CodeQL database
           wait-for-processing: 'true'  # Wait for processing to complete before finishing the job
           token: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
-
