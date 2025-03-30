@@ -85,7 +85,7 @@ jobs:
       - name: Secret Scanner
         run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
 
-  AI_Security_Review:
+  SAST_CodeQL:
     needs: dockertest
     runs-on: ubuntu-latest
     steps:
@@ -155,9 +155,9 @@ jobs:
         with:
           sarif_file: snyk-code.sarif
 
-  dast:
+  DAST_ZAP:
     name: ZAP - DAST
-    needs: AI_Security_Review
+    needs: SAST_CodeQL
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -215,7 +215,7 @@ jobs:
         id: codescan-ai
         uses: codescan-ai/codescanai-action@v1.0.1
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.CODESCAN_AUTH_TOKEN }}
         with:
           provider: "openai"
           changes_only: true
@@ -262,7 +262,7 @@ jobs:
                 body: commentBody
             })
 
-  CodeScanReport:
+  CodeScanAIReport:
     needs: dockertest  # This job will depend on dockertest job
     runs-on: ubuntu-latest
 
