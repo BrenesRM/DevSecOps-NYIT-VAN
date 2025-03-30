@@ -156,11 +156,11 @@ jobs:
           sarif_file: snyk-code.sarif
 
   dast:
-    name: ZAP - DAST
-    needs: AI_Security_Review
+    name: ZAP - DAST Test
+    needs: dockertest
     runs-on: ubuntu-latest
     permissions:
-      issues: write
+      security-events: write  # Needed for GitHub Security reports
 
     steps:
       - name: Checkout code
@@ -172,16 +172,15 @@ jobs:
           python-version: '3.10'
 
       - name: Install Dependencies
-        run: |
-          pip install -r requirements.txt  # Ensure dependencies are installed
+        run: pip install -r requirements.txt
 
       - name: Start Flask App
         run: |
           python app.py &
-          sleep 10  # Give Flask time to start
+          sleep 10  # Wait for Flask to start
 
       - name: Check if Flask is Running
-        run: curl -I http://localhost:5000 || exit 1  # Ensure server is running
+        run: curl -I http://localhost:5000 || exit 1
 
       - name: Run ZAP DAST Scan
         uses: zaproxy/action-api-scan@v0.7.0
@@ -193,14 +192,6 @@ jobs:
           format: 'sarif'
           output: 'zap-results.sarif'
           fail_action: false  # Do not fail if vulnerabilities are found
-
-      - name: "debug: Check if SARIF file exists"
-        run: |
-          if [ -f "zap-results.sarif" ]; then
-            ls -lah zap-results.sarif
-          else
-              echo "No SARIF file found."
-          fi
 
       - name: Upload ZAP Results to GitHub Security
         if: success()
@@ -214,3 +205,4 @@ jobs:
         with:
           name: zap-log
           path: zap.log
+        
