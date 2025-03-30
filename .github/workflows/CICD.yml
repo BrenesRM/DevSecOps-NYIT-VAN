@@ -186,13 +186,26 @@ jobs:
       - name: Run ZAP DAST Scan
         uses: zaproxy/action-api-scan@v0.7.0
         continue-on-error: true
+        timeout-minutes: 10
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://localhost:5000/xss'  # Change this to test different endpoints
+          target: 'http://localhost:5000/xss'
           format: 'sarif'
           output: 'zap-results.sarif'
+          fail_action: false  # Do not fail if vulnerabilities are found
 
-      - name: Upload ZAP Scan Results to GitHub Security Tab
+      - name: Debug: Check if SARIF file exists
+        run: ls -lah zap-results.sarif || echo "No SARIF file found."
+
+      - name: Upload ZAP Results to GitHub Security
+        if: success()
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'zap-results.sarif'
+
+      - name: Upload ZAP Log if SARIF Fails
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-log
+          path: zap.log
