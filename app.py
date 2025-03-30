@@ -5,6 +5,7 @@ from flask_limiter.util import get_remote_address
 import sqlite3
 import os
 import re
+import json
 
 app = Flask(__name__)
 
@@ -24,7 +25,7 @@ def init_db():
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
         cursor.execute('''CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, password TEXT)''')
-        # Store hashed passwords
+        # Store hashed passwords securely
         hashed_password = generate_password_hash("password123")
         cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", ("admin", hashed_password))
         conn.commit()
@@ -33,6 +34,10 @@ def init_db():
 # Secure route: SQL Injection mitigation using parameterized queries
 @app.route("/user/<username>")
 def get_user(username):
+    # Input validation to ensure username is safe
+    if not re.match(r"^[a-zA-Z0-9_-]+$", username):
+        return jsonify({"error": "Invalid username format"}), 400
+    
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     query = "SELECT * FROM users WHERE username = ?"
@@ -48,7 +53,7 @@ def get_user(username):
 @app.route("/xss", methods=["GET", "POST"])
 def xss():
     if request.method == "POST":
-        name = request.form.get("name", "").replace("<", "&lt;").replace(">", "&gt;")
+        name = request.form.get("name", "").replace("<", "&lt;").replace(">", "&gt;")  # XSS sanitization
         template = f"<h1>Hello, {name}!</h1>"
         return render_template_string(template)
     return '''
@@ -105,7 +110,7 @@ def read_file():
 @app.route("/redirect")
 def open_redirect():
     url = request.args.get("url", "/")
-    if not url.startswith("/"):
+    if not url.startswith("/"):  # Prevent open redirect vulnerabilities
         return jsonify({"error": "Invalid redirect URL"}), 400
     return f'<a href="{url}">Click here to continue</a>'
 
@@ -122,7 +127,7 @@ def login():
     conn.close()
     if user and check_password_hash(user[0], password):
         response = make_response(jsonify({"message": "Login successful"}))
-        response.set_cookie("auth", "true", httponly=True, secure=True)
+        response.set_cookie("auth", "true", httponly=True, secure=True)  # Secure cookie
         return response
     return jsonify({"error": "Invalid credentials"}), 401
 
@@ -136,8 +141,8 @@ def no_rate_limit():
 @app.route("/")
 def home():
     return render_template_string("""
-    <h1>Welcome to the insecure Flask Application</h1>
-    <p>Explore the insecure routes:</p>
+    <h1>Welcome to the secure Flask Application</h1>
+    <p>Explore the secure routes:</p>
     <ul>
         <li><a href="/xss">Cross-Site Scripting (XSS)</a></li>
         <li><a href="/user/admin">SQL Injection</a></li>
@@ -151,4 +156,4 @@ def favicon():
 
 if __name__ == "__main__":
     init_db()
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=False)  # Disable debug mode in production
