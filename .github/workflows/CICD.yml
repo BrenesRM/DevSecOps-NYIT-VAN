@@ -80,9 +80,4 @@ jobs:
           target: 'http://localhost:5000/xss'  # Change this to test different endpoints
           format: 'sarif'
           output: 'zap-results.sarif'
-
-      - name: Upload ZAP Scan Results to GitHub Security Tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'zap-results.sarif'
-          category: 'security'        
+    
