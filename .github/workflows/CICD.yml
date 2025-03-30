@@ -113,7 +113,7 @@ jobs:
 
   security_snyk:
     name: Dynamic Application Security Testing (DAST - SAST - SAC)
-    needs: AI_Security_Review
+    needs: SAST_CodeQL
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
