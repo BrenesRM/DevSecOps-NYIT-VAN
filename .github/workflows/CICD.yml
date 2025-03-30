@@ -90,10 +90,11 @@ jobs:
           artifact_name: zap-scan-report  # Ensure artifact name is valid
 
       - name: Upload ZAP Scan Artifact  # To upload the results as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: zap-scan-report  # Valid artifact name
-          path: /path/to/zap/reports  # Path where ZAP reports are saved
+          path: ./zap/reports  # Correct path where ZAP reports are saved
+        
 
 
       
