@@ -79,6 +79,12 @@ jobs:
       - name: Check if Flask is Running
         run: curl -I http://localhost:5000 || exit 1  # Ensure server is running
 
+      - name: Upload ZAP Scan Artifact  # To upload the results as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-scan-report  # Valid artifact name
+          path: ./zap/reports  # Correct path where ZAP reports are saved        
+
       - name: Run ZAP Full Scan  # More comprehensive than baseline
         uses: zaproxy/action-full-scan@v0.10.0  # Updated to latest version
         with:
@@ -87,13 +93,8 @@ jobs:
           issue_title: 'ZAP Security Full Scan Findings'
           fail_action: false  # Prevents pipeline failure in case of issues
           allow_issue_writing: true
-          #artifact_name: zap-scan-report  # Ensure artifact name is valid
+          artifact_name: zap-scan-report  # Ensure artifact name is valid
 
-      - name: Upload ZAP Scan Artifact  # To upload the results as an artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-scan-report  # Valid artifact name
-          path: ./zap/reports  # Correct path where ZAP reports are saved
         
 
 
