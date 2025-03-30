@@ -157,7 +157,7 @@ jobs:
           sarif_file: snyk-code.sarif
 
   DAST:
-    name: Dynamic Application Security Testing (ZAP-DAST)
+    name: Static Application Security Testing (ZAP-SAST)
     needs: SAST_Analysis
     runs-on: ubuntu-latest
     permissions:
