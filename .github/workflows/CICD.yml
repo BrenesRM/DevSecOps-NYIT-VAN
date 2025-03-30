@@ -45,7 +45,6 @@ jobs:
           docker pull ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
        
 #____
-
   CodeScanAIReport:
     needs: build
     runs-on: ubuntu-latest
@@ -58,11 +57,11 @@ jobs:
         id: codescan-ai
         uses: codescan-ai/codescanai-action@v1.0.1
         env:
-          OPENAI_API_KEY: ${{ secrets.CODESCAN_AUTH_TOKEN }}  # Updated token secret
+          OPENAI_API_KEY: ${{ secrets.CODESCAN_AUTH_TOKEN }}
         with:
           provider: "openai"
           changes_only: true
-          pr_number: ${{ github.event.pull_request.number || 0 }}  # Fallback to 0 if pr_number is unavailable
+          pr_number: ${{ github.event.pull_request.number || 0 }}
           repo: ${{ github.repository }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           output_file: "codescanai_report.txt"
@@ -100,8 +99,6 @@ jobs:
           EOF
 
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@v3  # Fixed: Changed v4 -> v3
         with:
           sarif_file: codescanai_report.sarif
-        
-
