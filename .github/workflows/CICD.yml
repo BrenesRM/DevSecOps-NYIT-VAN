@@ -201,22 +201,23 @@ jobs:
           path: ./zap/reports
 
   CodeScanAI:
-    needs: build
-    runs-on: ubuntu-latest
+      needs: dockertest
+      runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
 
-      - name: Run CodeScanAI Action
-        id: codescan-ai
-        uses: codescan-ai/codescanai-action@v1.0.1
-        env:
-          OPENAI_API_KEY: ${{ secrets.CODESCAN_AUTH_TOKEN }}
-        with:
-          provider: "openai"
-          changes_only: true
-          pr_number: ${{ github.event.pull_request.number }}
-          repo: ${{ github.repository }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          output_file: "codescanai_report.txt"
+        - name: Run CodeScanAI Action
+          id: codescan-ai
+          uses: codescan-ai/codescanai-action@v1.0.1
+          env:
+            OPENAI_API_KEY: ${{ secrets.CODESCAN_AUTH_TOKEN }}
+          with:
+            provider: "openai"
+            changes_only: true
+            pr_number: ${{ github.event.pull_request.number || 0 }}  # Fallback to 0 if pr_number is unavailable
+            repo: ${{ github.repository }}
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            output_file: "codescanai_report.txt"
+
