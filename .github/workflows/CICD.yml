@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-# This part is intentional and needs to be scanned for exposed secrets.
 env:
   DOCKER_REGISTRY: brenesrm
   IMAGE_NAME: devsecops-nyit-van
@@ -16,7 +15,6 @@ jobs:
   build:
     name: Build Image
     runs-on: ubuntu-24.04
-
     permissions:
       security-events: write
       packages: read
@@ -24,18 +22,15 @@ jobs:
       contents: read
 
     steps:
-      # 1. Checkout source code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 3. Build & Push the Docker image
       - name: Build & Push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -45,18 +40,17 @@ jobs:
           build-args: |
             APP_ENV=${{ secrets.APP_ENV }}
 
-      # 4. Verify Docker image exists
       - name: Verify Docker image
         run: |
           docker pull ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
   dast:
     name: ZAP - DAST Test
-    needs: build  # Ensure this job runs after the build job
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       issues: write
-      security-events: write  # Allow reporting security issues
+      security-events: write
 
     steps:
       - name: Checkout code
@@ -69,34 +63,59 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install -r requirements.txt  # Ensure dependencies are installed
+          pip install -r requirements.txt
 
       - name: Start Flask App
         run: |
-          python app.py &  # Run Flask in the background
-          sleep 10  # Give Flask time to start
+          python app.py &  
+          sleep 10
 
       - name: Check if Flask is Running
-        run: curl -I http://localhost:5000 || exit 1  # Ensure server is running
+        run: curl -I http://localhost:5000 || exit 1
 
-      - name: Upload ZAP Scan Artifact  # To upload the results as an artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-scan-report  # Valid artifact name
-          path: ./zap/reports  # Correct path where ZAP reports are saved        
-
-      - name: Run ZAP Full Scan  # More comprehensive than baseline
-        uses: zaproxy/action-full-scan@v0.10.0  # Updated to latest version
+      - name: Run ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.10.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://localhost:5000'  # Fixed target URL (removed extra space)
+          target: 'http://localhost:5000'
           issue_title: 'ZAP Security Full Scan Findings'
-          fail_action: false  # Prevents pipeline failure in case of issues
+          fail_action: false
           allow_issue_writing: true
-          artifact_name: zap-scan-report  # Ensure artifact name is valid
+          artifact_name: zap-scan-report
 
-        
+      - name: Upload ZAP Scan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-scan-report
+          path: ./zap/reports
 
+  CodeScan:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    runs-on: ubuntu-latest
 
-      
-    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache files
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.sonar
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Run Analysis
+        uses: codescan-io/codescan-scanner-action@5b2e8c5683ef6a5adc8fa3b7950bb07debccce12
+        with:
+          login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
+          organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
+          projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: codescan.sarif
