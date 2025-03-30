@@ -114,7 +114,7 @@ jobs:
 
   DAST_SAST_snyk_AI:
     name: Dynamic Application Security Testing (DAST - SAST - SAC)
-    needs: SAST_CodeQL
+    needs: SAST_Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -158,7 +158,7 @@ jobs:
 
   DAST:
     name: Dynamic Application Security Testing (ZAP-DAST)
-    needs: SAST_CodeQL
+    needs: SAST_Analysis
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -203,7 +203,7 @@ jobs:
 
   CodeScanAIReport:
     name: CodeScanAI Report Generation
-    needs: build
+    needs: dockertest
     runs-on: ubuntu-latest
 
     steps:
