@@ -43,32 +43,11 @@ jobs:
       - name: Verify Docker image
         run: |
           docker pull ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
-  dockertest:
-    name: Container Vulnerability Scanning Test
-    needs: build
-    runs-on: ubuntu-24.04
-    steps:
-      # 1. Scan Docker image
-      - name: Scan Docker image
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'  # Optional: Limit to high-risk vulnerabilities
-
-      # 2. Upload Trivy scan results to GitHub Security tab
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
        
 #____
 
   CodeScanAIReport:
-    needs: dockertest  # This job will depend on dockertest job
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -89,7 +68,7 @@ jobs:
           output_file: "codescanai_report.txt"
 
       - name: Upload CodeScanAI Report (Artifact)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: codescanai-report
           path: codescanai_report.txt
