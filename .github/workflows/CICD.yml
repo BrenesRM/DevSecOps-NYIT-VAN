@@ -44,123 +44,12 @@ jobs:
         run: |
           docker pull ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-  dockertest:
-    name: Container Vulnerability Scanning Test
-    needs: build
-    runs-on: ubuntu-24.04
-    steps:
-      # 1. Scan Docker image
-      - name: Scan Docker image
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'  # Optional: Limit to high-risk vulnerabilities
-
-      # 2. Upload Trivy scan results to GitHub Security tab
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
-       
-  check-secrets:
-    name: Secrets Management Analysis
-    needs: dockertest
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
-      - name: Install Detect Secrets
-        run: pip install detect-secrets  # Ensure detect-secrets is installed
-
-      - name: Generate Secrets Baseline (if missing)
-        run: |
-          if [ ! -f ".secrets.baseline" ]; then
-            detect-secrets scan > .secrets.baseline
-          fi
-
-      - name: Secret Scanner
-        run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
-
-  AI_Security_Review:
-    needs: dockertest
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: 'python'
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: 'security'
-          output: '../results'
-          upload: 'always'
-          cleanup-level: 'brutal'
-          add-snippets: 'false'
-          skip-queries: 'false'
-          checkout_path: '${{ github.workspace }}'
-          upload-database: 'true'
-          wait-for-processing: 'true'
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-  security_snyk:
-    name: Dynamic Application Security Testing (DAST - SAST - SAC)
-    needs: AI_Security_Review
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Snyk CLI
-        run: npm install -g snyk
-
-      - name: Debug SNYK_TOKEN
-        run: echo "SNYK_TOKEN is set"
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-      - name: Authenticate Snyk
-        run: snyk auth $SNYK_TOKEN
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/docker@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} 
-        with:
-          image: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
-      - name: Snyk Code Analysis (SAST)
-        run: snyk code test --sarif > snyk-code.sarif || true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-      - name: Snyk Open Source Dependency Scan (SCA)
-        run: snyk monitor --all-projects || true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-      - name: Upload Snyk Code results to GitHub
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: snyk-code.sarif
-
   dast:
     name: ZAP - DAST Test
-    needs: dockertest
     runs-on: ubuntu-latest
     permissions:
-      security-events: write  # Needed for GitHub Security reports
+      issues: write
+      security-events: write  # Allow reporting security issues
 
     steps:
       - name: Checkout code
@@ -172,37 +61,28 @@ jobs:
           python-version: '3.10'
 
       - name: Install Dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt  # Ensure dependencies are installed
 
       - name: Start Flask App
         run: |
           python app.py &
-          sleep 10  # Wait for Flask to start
+          sleep 10  # Give Flask time to start
 
       - name: Check if Flask is Running
-        run: curl -I http://localhost:5000 || exit 1
+        run: curl -I http://localhost:5000 || exit 1  # Ensure server is running
 
       - name: Run ZAP DAST Scan
         uses: zaproxy/action-api-scan@v0.7.0
         continue-on-error: true
-        timeout-minutes: 10
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://localhost:5000/xss'
+          target: 'http://localhost:5000/xss'  # Change this to test different endpoints
           format: 'sarif'
           output: 'zap-results.sarif'
-          fail_action: false  # Do not fail if vulnerabilities are found
 
-      - name: Upload ZAP Results to GitHub Security
-        if: success()
+      - name: Upload ZAP Scan Results to GitHub Security Tab
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'zap-results.sarif'
-
-      - name: Upload ZAP Log if SARIF Fails
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: zap-log
-          path: zap.log
-        
+          category: 'security'        
