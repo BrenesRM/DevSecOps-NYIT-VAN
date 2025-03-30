@@ -200,6 +200,8 @@ jobs:
           name: zap-scan-report
           path: ./zap/reports
 
+#____
+
   CodeScanAIReport:
     needs: dockertest  # This job will depend on dockertest job
     runs-on: ubuntu-latest
@@ -221,14 +223,41 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           output_file: "codescanai_report.txt"
 
+      - name: Upload CodeScanAI Report (Artifact)
+        uses: actions/upload-artifact@v3
+        with:
+          name: codescanai-report
+          path: codescanai_report.txt
+
       - name: Convert CodeScanAI Report to SARIF
         run: |
-          echo '{"runs":[{"tool":{"driver":{"name":"CodeScanAI"}},"results":[{"message":{"text":"AI code scan results."}}]}]}' > codescanai_report.sarif
+          cat <<EOF > codescanai_report.sarif
+          {
+            "version": "2.1.0",
+            "runs": [
+              {
+                "tool": { "driver": { "name": "CodeScanAI", "version": "1.0.1" } },
+                "results": [
+                  {
+                    "message": { "text": "CodeScanAI detected issues - check report for details." },
+                    "locations": [
+                      {
+                        "physicalLocation": {
+                          "artifactLocation": { "uri": "codescanai_report.txt" },
+                          "region": { "startLine": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
 
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: codescanai_report.sarif
-        
         
 
