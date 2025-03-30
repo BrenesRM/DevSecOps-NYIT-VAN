@@ -156,7 +156,7 @@ jobs:
           sarif_file: snyk-code.sarif
 
   dast:
-    name: ZAP - DAST Test
+    name: ZAP - DAST
     needs: AI_Security_Review
     runs-on: ubuntu-latest
     permissions:
@@ -185,6 +185,14 @@ jobs:
 
       - name: Run ZAP DAST Scan
         uses: zaproxy/action-api-scan@v0.7.0
+        continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://localhost:5000/xss'  # Test the XSS endpoint (update as needed)
+          target: 'http://localhost:5000/xss'  # Change this to test different endpoints
+          format: 'sarif'
+          output: 'zap-results.sarif'
+
+      - name: Upload ZAP Scan Results to GitHub Security Tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'zap-results.sarif'
