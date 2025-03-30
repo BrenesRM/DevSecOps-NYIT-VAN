@@ -52,6 +52,7 @@ jobs:
 
   dast:
     name: ZAP - DAST Test
+    needs: build  # Ensure this job runs after the build job
     runs-on: ubuntu-latest
     permissions:
       issues: write
