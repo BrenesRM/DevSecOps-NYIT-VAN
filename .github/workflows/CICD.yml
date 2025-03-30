@@ -194,8 +194,13 @@ jobs:
           output: 'zap-results.sarif'
           fail_action: false  # Do not fail if vulnerabilities are found
 
-      - name: Debug: Check if SARIF file exists
-        run: ls -lah zap-results.sarif || echo "No SARIF file found."
+      - name: "debug: Check if SARIF file exists"
+        run: |
+          if [ -f "zap-results.sarif" ]; then
+            ls -lah zap-results.sarif
+          else
+              echo "No SARIF file found."
+          fi
 
       - name: Upload ZAP Results to GitHub Security
         if: success()
