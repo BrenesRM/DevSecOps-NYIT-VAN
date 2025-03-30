@@ -17,6 +17,12 @@ jobs:
     name: Build Image
     runs-on: ubuntu-24.04
 
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
     steps:
       # 1. Checkout source code
       - name: Checkout code
