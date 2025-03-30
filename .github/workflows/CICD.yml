@@ -78,7 +78,8 @@ jobs:
       - name: Check if Flask is Running
         run: curl -I http://localhost:5000 || exit 1  # Ensure server is running
 
+      - name: Run ZAP Full Scan  # More comprehensive than baseline
+        uses: zaproxy/action-full-scan@v0.10.0  # Updated to latest version
 
-      
       
     
