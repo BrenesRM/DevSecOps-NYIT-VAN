@@ -49,17 +49,17 @@ jobs:
       - name: Verify Docker image
         run: |
           docker pull ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
   dast:
     name: ZAP - DAST Test
     runs-on: ubuntu-latest
     permissions:
       issues: write
-      security-events: write
-      actions: write  # Needed for artifact upload
+      security-events: write  # Allow reporting security issues
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # Updated to latest version
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -68,20 +68,15 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r requirements.txt  # Ensure dependencies are installed
 
       - name: Start Flask App
         run: |
           python app.py &
-          for i in {1..15}; do
-            if curl -sSf http://localhost:5000 >/dev/null; then
-              echo "Flask app is running!"
-              exit 0
-            fi
-            sleep 2
-          done
-          echo "Flask app failed to start"
-          exit 1
+          sleep 10  # Give Flask time to start
+
+      - name: Check if Flask is Running
+        run: curl -I http://localhost:5000 || exit 1  # Ensure server is running
 
       - name: Run ZAP Full Scan  # More comprehensive than baseline
         uses: zaproxy/action-full-scan@v0.10.0  # Updated to latest version
@@ -99,6 +94,7 @@ jobs:
           path: |
             report_json.json
             report_md.md
-            report_html.html      
+            report_html.html 
+      
       
     
