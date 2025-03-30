@@ -113,7 +113,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   DAST_SAST_snyk_AI:
-    name: Dynamic Application Security Testing (DAST - SAST - SAC)
+    name: Snyk Application Security Testing (DAST - SAST - SAC)
     needs: SAST_Analysis
     runs-on: ubuntu-latest
     steps:
@@ -156,58 +156,61 @@ jobs:
         with:
           sarif_file: snyk-code.sarif
 
-  DAST:
-    name: Dynamic Application Security Testing (ZAP-DAST)
-    needs: SAST_Analysis
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    permissions:
-      issues: write
-      security-events: write
+DAST:
+  name: Dynamic Application Security Testing (ZAP-DAST)
+  needs: SAST_Analysis
+  runs-on: ubuntu-latest
+  continue-on-error: true
+  permissions:
+    issues: write
+    security-events: write
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Install Dependencies
-        run: |
-          pip install -r requirements.txt
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
 
-      - name: Start Flask App
-        run: |
-          python app.py &  
-          sleep 10
+    - name: Start Flask App
+      run: |
+        python app.py &  
+        sleep 10
 
-      - name: Check if Flask is Running
-        run: curl -I http://localhost:5000 || exit 1
+    - name: Check if Flask is Running
+      run: curl -I http://localhost:5000 || exit 1
 
-      - name: Run ZAP Full Scan
-        uses: zaproxy/action-full-scan@v0.10.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://localhost:5000'
+    - name: Run ZAP Full Scan
+      uses: zaproxy/action-full-scan@v0.10.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        target: 'http://localhost:5000'
+        issue_title: 'ZAP Security Full Scan Findings'
+        fail_action: false
+        allow_issue_writing: true
+        artifact_name: zap-scan-report
 
+    - name: Debug File Structure
+      run: |
+        if [ -d "./zap/reports" ]; then
+          echo "Directory ./zap/reports exists."
+        else
+          echo "Directory ./zap/reports does not exist. Creating it..."
+          mkdir -p ./zap/reports
+        fi
+        ls -R ./zap/
 
-      - name: Debug File Structure
-        run: |
-          if [ -d "./zap/reports" ]; then
-            echo "Directory ./zap/reports exists."
-          else
-            echo "Directory ./zap/reports does not exist. Creating it..."
-            mkdir -p ./zap/reports
-          fi
-          ls -R ./zap/
-
-      - name: Upload ZAP Scan Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-scan-report
-          path: ./zap/reports
+    - name: Upload ZAP Scan Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: zap-scan-report
+        path: ./zap/reports
 
 
   CodeScanAIReport:
