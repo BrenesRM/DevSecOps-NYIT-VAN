@@ -154,3 +154,29 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: snyk-code.sarif
+
+  dast:
+    name: ZAP - DAST Test
+    needs: dockertest  # Ensures the Docker image is built first
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write  # Required for GitHub to log security issues
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Start the web application before scanning
+      - name: Start Web API
+        run: |
+          npm install
+          npm run dev &
+          sleep 10  # Wait for the server to initialize
+
+      # Run ZAP API Scan
+      - name: ZAP Scan
+        uses: zaproxy/action-api-scan@v0.7.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: 'http://10.0.0.10:30081/'
+        
