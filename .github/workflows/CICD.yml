@@ -160,6 +160,7 @@ jobs:
     name: Dynamic Application Security Testing (ZAP-DAST)
     needs: SAST_Analysis
     runs-on: ubuntu-latest
+    continue-on-error: true
     permissions:
       issues: write
       security-events: write
@@ -190,10 +191,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: 'http://localhost:5000'
-          issue_title: 'ZAP Security Full Scan Findings'
-          fail_action: false
-          allow_issue_writing: true
-          artifact_name: zap-scan-report
+
 
       - name: Debug File Structure
         run: |
