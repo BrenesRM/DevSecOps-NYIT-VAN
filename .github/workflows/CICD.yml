@@ -201,66 +201,39 @@ jobs:
           path: ./zap/reports
 
   CodeScanAI:
+    needs: dockertest
     runs-on: ubuntu-latest
-    needs: dockertest  # This job will depend on dockertest job
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
 
     steps:
-      - uses: actions/checkout@v4
-      # Use the codescanai-action to generate a CodeScanAI report.
-      - name: Run CodeScanAI Action
-        id: codescan-ai
-        uses: codescan-ai/codescanai-action@v1.0.1
-        env:
-          OPENAI_API_KEY: ${{ secrets.CODESCAN_AUTH_TOKEN }}
-        with:
-          provider: "openai"
-          changes_only: true
-          pr_number: ${{ github.event.pull_request.number }}
-          repo: ${{ github.repository }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          output_file: "codescanai_report.txt"
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Check CodeScanAI report exist
-        shell: bash
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
         run: |
-          codescanai_report_file="codescanai_report.txt"
+          pip install codescanai
 
-          # Check if the output file exists and is not empty
-          if [[ ! -s "$codescanai_report_file" ]]; then
-            echo "No output detected from CodeScanAI action."
-            exit 1
-          fi
+      - name: Run Code Analysis
+        run: |
+          codescanai analyze --path . --output report.json
 
-          echo "CodeScanAI action produced output successfully."
-
-      - name: Comment CodeScanAI Output to PR
-        uses: actions/github-script@v7
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: Upload Code Analysis Report
+        uses: actions/upload-artifact@v4
         with:
-          script: |
-            const fs = require('fs');
-            const output = fs.readFileSync('codescanai_report.txt', 'utf8');
-
-            const {data: comments} = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-            })
-            const botComment = comments.find(comment => {
-                return comment.user.type === 'Bot' && comment.body.includes('CodeScanAI Report')
-            })
-
-            const commentBody = `## CodeScanAI Report\n\n<details><summary>View Results</summary>\n\n${output}\n\n</details>`;
-            await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: commentBody
-            })
+          name: code-analysis-report
+          path: report.json
 
   CodeScanAIReport:
     needs: dockertest  # This job will depend on dockertest job
