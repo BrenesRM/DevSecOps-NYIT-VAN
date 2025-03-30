@@ -65,7 +65,7 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
        
-  check-secrets:
+  Check-Secrets:
     name: Secrets Management Analysis
     needs: dockertest
     runs-on: ubuntu-24.04
@@ -85,7 +85,8 @@ jobs:
       - name: Secret Scanner
         run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
 
-  SAST_CodeQL:
+  SAST_Analysis:
+    name: Static Application Security Testing (SAST)
     needs: dockertest
     runs-on: ubuntu-latest
     steps:
@@ -111,7 +112,7 @@ jobs:
           wait-for-processing: 'true'
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  security_snyk:
+  DAST_SAST_snyk_AI:
     name: Dynamic Application Security Testing (DAST - SAST - SAC)
     needs: SAST_CodeQL
     runs-on: ubuntu-latest
@@ -155,8 +156,8 @@ jobs:
         with:
           sarif_file: snyk-code.sarif
 
-  DAST_ZAP:
-    name: ZAP - DAST
+  DAST:
+    name: Dynamic Application Security Testing (ZAP-DAST)
     needs: SAST_CodeQL
     runs-on: ubuntu-latest
     permissions:
@@ -199,8 +200,9 @@ jobs:
         with:
           name: zap-scan-report
           path: ./zap/reports
-          
+
   CodeScanAIReport:
+    name: CodeScanAI Report Generation
     needs: build
     runs-on: ubuntu-latest
 
