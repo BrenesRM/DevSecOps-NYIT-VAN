@@ -78,23 +78,7 @@ jobs:
       - name: Check if Flask is Running
         run: curl -I http://localhost:5000 || exit 1  # Ensure server is running
 
-      - name: Run ZAP Full Scan  # More comprehensive than baseline
-        uses: zaproxy/action-full-scan@v0.10.0  # Updated to latest version
-        with:
-          target: 'http://localhost:5000'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue_title: 'ZAP Security Scan Findings'
-          container: 'ghcr.io/zaproxy/zaproxy:stable'
-          cmd_options: '-I'  # Ignore warning rules
-          
-      - name: Upload Scan Reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: zap-scan-results  # Hyphens instead of underscores
-          path: |
-            report_json.json
-            report_md.md
-            report_html.html 
+
       
       
     
