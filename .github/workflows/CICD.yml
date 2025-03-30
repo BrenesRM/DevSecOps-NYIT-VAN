@@ -87,12 +87,6 @@ jobs:
           issue_title: 'ZAP Security Full Scan Findings'
           fail_action: false  # Prevents pipeline failure in case of issues
           allow_issue_writing: true
-      
-      - name: Upload ZAP scan results as an artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: zap_scan_results  # Updated to a valid name
-          path: ./zap_results
 
       
     
