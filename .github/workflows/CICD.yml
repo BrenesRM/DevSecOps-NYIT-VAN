@@ -194,7 +194,7 @@ jobs:
           issue_title: 'zap security full scan findings'
           fail_action: false
           allow_issue_writing: true
-          artifact_name: zapscanreport
+          artifact_name: "run zap full scan"
 
       - name: debug file structure
         run: |
