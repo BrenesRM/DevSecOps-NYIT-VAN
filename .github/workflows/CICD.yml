@@ -194,7 +194,7 @@ jobs:
           issue_title: 'zap security full scan findings'
           fail_action: false
           allow_issue_writing: true
-          artifact_name: zap-scan-report
+          artifact_name: zapscanreport
 
       - name: debug file structure
         run: |
@@ -209,7 +209,7 @@ jobs:
       - name: upload zap scan artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zap-scan-report
+          name: zapscanreport
           path: ./zap/reports
 
 
