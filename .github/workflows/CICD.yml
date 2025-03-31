@@ -85,7 +85,7 @@ jobs:
       - name: Secret Scanner
         run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
 
-  SAST_Analysis:
+  sast_analysis:
     name: Static Application Security Testing (SAST)
     needs: dockertest
     runs-on: ubuntu-latest
@@ -156,9 +156,9 @@ jobs:
         with:
           sarif_file: snyk-code.sarif
 
-  DAST:
-    name: Dynamic Application Security Testing (ZAP-DAST)
-    needs: SAST_Analysis
+  dast:
+    name: dynamic application security testing (zapdast)
+    needs: sast_analysis
     runs-on: ubuntu-latest
     continue-on-error: true
     permissions:
@@ -166,37 +166,37 @@ jobs:
       security-events: write
 
     steps:
-      - name: Checkout code
+      - name: checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: set up python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install Dependencies
+      - name: install dependencies
         run: |
           pip install -r requirements.txt
 
-      - name: Start Flask App
+      - name: start flask app
         run: |
           python app.py &  
           sleep 10
 
-      - name: Check if Flask is Running
+      - name: check if flask is running
         run: curl -I http://localhost:5000 || exit 1
 
-      - name: Run ZAP Full Scan
+      - name: run zap full scan
         uses: zaproxy/action-full-scan@v0.10.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: 'http://localhost:5000'
-          issue_title: 'ZAP Security Full Scan Findings'
+          issue_title: 'zap security full scan findings'
           fail_action: false
           allow_issue_writing: true
           artifact_name: zap-scan-report
 
-      - name: Debug File Structure
+      - name: debug file structure
         run: |
           if [ -d "./zap/reports" ]; then
             echo "Directory ./zap/reports exists."
@@ -206,7 +206,7 @@ jobs:
           fi
           ls -R ./zap/
 
-      - name: Upload ZAP Scan Artifact
+      - name: upload zap scan artifact
         uses: actions/upload-artifact@v4
         with:
           name: zap-scan-report
