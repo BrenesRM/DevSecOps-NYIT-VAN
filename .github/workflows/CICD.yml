@@ -297,11 +297,11 @@ jobs:
 
       - name: Run Kubesec Scan
         id: kubesec
-        uses: controlplaneio/kubesec-action@v1
+        uses: controlplaneio/kubesec-action@main
         with:
           input: k8s/test/web-test.yaml
-          format: json
-          template: template/sarif.tpl
+          format: template
+          template: '@/templates/sarif.tpl'
           output: kubesec-results.sarif
           exit-code: 0
 
