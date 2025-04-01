@@ -293,7 +293,7 @@ jobs:
       - name: Run kubesec scanner
         uses: controlplaneio/kubesec-action@main
         with:
-          input: \k8s\kind-cluster.yaml
+          input: /github/workspace/k8s/kind-cluster.yaml
           exit-code: "0"
           format: template
           template: template/sarif.tpl
