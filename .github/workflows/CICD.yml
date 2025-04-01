@@ -300,7 +300,7 @@ jobs:
           input: /github/workspace/k8s/test/web-test.yaml
           exit-code: "0"
           format: json
-          template: template/sarif.tpl
+          # template: template/sarif.tpl
           output: kubesec-results.sarif
 
       - name: Upload Kubesec scan results to GitHub Security tab
