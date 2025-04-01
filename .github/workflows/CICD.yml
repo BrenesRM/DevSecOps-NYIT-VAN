@@ -295,7 +295,7 @@ jobs:
         with:
           input: /github/workspace/k8s/kind-cluster.yaml
           exit-code: "0"
-          format: template
+          format: json
           template: template/sarif.tpl
           output: kubesec-results.sarif
 
