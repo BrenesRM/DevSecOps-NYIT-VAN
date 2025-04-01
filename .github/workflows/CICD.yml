@@ -305,6 +305,9 @@ jobs:
           output: kubesec-results.sarif
           exit-code: 0
 
+      - name: Debug SARIF Output
+        run: cat kubesec-results.sarif    
+
       - name: Upload Kubesec Scan Results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
