@@ -324,7 +324,19 @@ jobs:
             ]
           }' > kubesec-results.sarif
 
-          jq '. | { "runs": [ { "tool": { "driver": { "name": "KubeSec", "informationUri": "https://kubesec.io", "version": "1.0.0" } }, "results": [ .[] | { "ruleId": .scoring.advise[].id, "message": { "text": .message }, "locations": [ { "physicalLocation": { "artifactLocation": { "uri": .fileName } } } ] } ] } ] }' kubesec-results.json >> kubesec-results.sarif
+          jq '. | { 
+            "version": "2.1.0",
+            "runs": [ { 
+              "tool": { "driver": { "name": "KubeSec", "informationUri": "https://kubesec.io", "version": "1.0.0" } }, 
+              "results": [ 
+                .[] | select(.scoring.advise != null) | { 
+                  "ruleId": .scoring.advise[].id, 
+                  "message": { "text": .message }, 
+                  "locations": [ { "physicalLocation": { "artifactLocation": { "uri": .fileName } } } ] 
+                } 
+              ] 
+            } ] 
+          }' kubesec-results.json >> kubesec-results.sarif
 
       - name: Debug SARIF Output
         run: cat kubesec-results.sarif    
