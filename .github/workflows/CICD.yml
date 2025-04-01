@@ -282,13 +282,25 @@ jobs:
         with:
           sarif_file: codescanai_report.sarif
 
+  kubeSecScan:
+    name: kubernetSecScan-manifesto
+    runs-on: ubuntu-20.04
+    needs: dockertest
+    continue-on-error: true
+    permissions:
+      issues: write
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Run Kubesec scan
         uses: controlplaneio/kubesec-action@main
         with:
           input: k8s/test/web-test.yaml
           format: json
           output: kubesec-results.json
-        
+          
       - name: Install jq
         run: sudo apt-get install -y jq
         
