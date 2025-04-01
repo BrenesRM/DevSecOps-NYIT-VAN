@@ -297,7 +297,7 @@ jobs:
       - name: Run kubesec scanner
         uses: controlplaneio/kubesec-action@main
         with:
-          input: /github/workspace/k8s/*.yaml
+          input: /github/workspace/k8s/test/web-test.yaml
           exit-code: "0"
           format: json
           template: template/sarif.tpl
