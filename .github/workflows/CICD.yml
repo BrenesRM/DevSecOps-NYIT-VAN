@@ -308,7 +308,11 @@ jobs:
       - name: Debug SARIF Output
         run: cat kubesec-results.sarif    
 
-      - name: Upload Kubesec Scan Results to GitHub
+      - name: Run KubeSec
+        run: |
+          kubesec scan k8s/test/web-test.yaml --format sarif > kubesec-results.sarif
+
+      - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: kubesec-results.sarif
