@@ -285,12 +285,13 @@ jobs:
   kubeSecScan:
     name: kubernetSecScan-manifesto
     runs-on: ubuntu-20.04
+    needs: dockertest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Run kubesec scanner
-        uses: controlplaneio/kubesec-action@master
+        uses: controlplaneio/kubesec-action@main
         with:
           input: kind-cluster.yaml
           exit-code: "0"
