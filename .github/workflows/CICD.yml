@@ -282,28 +282,73 @@ jobs:
         with:
           sarif_file: codescanai_report.sarif
 
-  kubeSecScan:
-    name: kubernetSecScan-manifesto
-    runs-on: ubuntu-20.04
-    needs: dockertest
-    continue-on-error: true
-    permissions:
-      issues: write
-      security-events: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Run kubesec scanner
+      - name: Run Kubesec scan
         uses: controlplaneio/kubesec-action@main
         with:
-          input: /github/workspace/k8s/test/web-test.yaml
-          exit-code: "0"
+          input: k8s/test/web-test.yaml
           format: json
-          # template: template/sarif.tpl
-          output: kubesec-results.sarif
+          output: kubesec-results.json
+        
+      - name: Install jq
+        run: sudo apt-get install -y jq
+        
+      - name: Convert to SARIF format
+        run: |
+          cat > kubesec-results.sarif << 'EOF'
+          {
+            "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+            "version": "2.1.0",
+            "runs": [
+              {
+                "tool": {
+                  "driver": {
+                    "name": "Kubesec",
+                    "informationUri": "https://kubesec.io/",
+                    "rules": []
+                  }
+                },
+                "results": []
+              }
+            ]
+          }
+          EOF
+          
+          jq -r '
+          .[] | 
+          select(.scoring.advise != null) | 
+          .scoring.advise[] | 
+          {
+            "ruleId": .id,
+            "level": "note",
+            "message": { "text": .reason },
+            "locations": [{
+              "physicalLocation": {
+                "artifactLocation": { "uri": "k8s/test/web-test.yaml" },
+                "region": { "startLine": 1 }
+              }
+            }]
+          }
+          ' kubesec-results.json | jq -s '. as $results | 
+          {
+            "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+            "version": "2.1.0",
+            "runs": [
+              {
+                "tool": {
+                  "driver": {
+                    "name": "Kubesec",
+                    "informationUri": "https://kubesec.io/",
+                    "rules": []
+                  }
+                },
+                "results": $results
+              }
+            ]
+          }' > kubesec-results.sarif
+          
+          cat kubesec-results.sarif
 
-      - name: Upload Kubesec scan results to GitHub Security tab
+      - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: kubesec-results.sarif
