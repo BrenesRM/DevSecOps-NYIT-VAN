@@ -302,18 +302,36 @@ jobs:
           input: k8s/test/web-test.yaml
           format: json
           template: template/sarif.tpl
-          output: kubesec-results.sarif
+          output: kubesec-results.json
           exit-code: 0
+
+      - name: Convert Kubesec JSON to SARIF
+        run: |
+          echo '{
+            "version": "2.1.0",
+            "runs": [
+              {
+                "tool": {
+                  "driver": {
+                    "name": "KubeSec",
+                    "informationUri": "https://kubesec.io",
+                    "version": "1.0.0",
+                    "rules": []
+                  }
+                },
+                "results": []
+              }
+            ]
+          }' > kubesec-results.sarif
+
+          jq '. | { "runs": [ { "tool": { "driver": { "name": "KubeSec", "informationUri": "https://kubesec.io", "version": "1.0.0" } }, "results": [ .[] | { "ruleId": .scoring.advise[].id, "message": { "text": .message }, "locations": [ { "physicalLocation": { "artifactLocation": { "uri": .fileName } } } ] } ] } ] }' kubesec-results.json >> kubesec-results.sarif
 
       - name: Debug SARIF Output
         run: cat kubesec-results.sarif    
-
-      #- name: Run KubeSec
-      #  run: |
-      #    kubesec scan k8s/test/web-test.yaml --format sarif > kubesec-results.sarif
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: kubesec-results.sarif
+
 
