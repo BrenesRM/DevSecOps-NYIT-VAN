@@ -297,7 +297,7 @@ jobs:
 
       - name: Run Kubesec Scan
         id: kubesec
-        uses: controlplaneio/kubesec-action@main
+        uses: controlplaneio/kubesec-action@v1
         with:
           input: k8s/test/web-test.yaml
           format: json
