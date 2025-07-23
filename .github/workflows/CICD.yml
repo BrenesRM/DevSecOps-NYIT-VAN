@@ -85,7 +85,7 @@ jobs:
       - name: Secret Scanner
         run: detect-secrets scan --baseline .secrets.baseline || true  # Allow process to continue
 
-  sast_analysis:
+  SAST_Analysis:
     name: Static Application Security Testing (SAST)
     needs: dockertest
     runs-on: ubuntu-latest
