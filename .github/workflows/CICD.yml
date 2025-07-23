@@ -89,29 +89,25 @@ jobs:
     name: Static Application Security Testing (SAST)
     needs: dockertest
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          'java,python,javascript'
-          queries: security-extended 
+          languages: 'java,python,javascript'  # Update with all needed languages
+          queries: security-extended
+
+      - name: Autobuild project
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           category: 'security'
-          output: '../results'
           upload: 'always'
-          cleanup-level: 'brutal'
-          add-snippets: 'false'
-          skip-queries: 'false'
-          checkout_path: '${{ github.workspace }}'
-          upload-database: 'true'
-          wait-for-processing: 'true'
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   DAST_SAST_snyk_AI:
     name: Snyk Application Security Testing (DAST - SAST - SAC)
