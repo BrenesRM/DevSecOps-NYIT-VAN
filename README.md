@@ -12,8 +12,10 @@ Academic and practical repository designed to demonstrate a DevSecOps approach f
 - [Flows and State Models (Mermaid)](#flows-and-state-models-mermaid)
 - [Compliance and Reference Frameworks](#compliance-and-reference-frameworks)
 - [Results and Evidence](#results-and-evidence)
+- [Evidence Reproducibility (Console to CSV/XLSX)](#evidence-reproducibility-console-to-csvxlsx)
 - [ACM Poster](#acm-poster)
 - [Repository Structure](#repository-structure)
+- [Limitations and Future Work](#limitations-and-future-work)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -104,43 +106,84 @@ stateDiagram-v2
 
 ## Results and Evidence
 
-The following results were extracted from repository documentation and implementation artifacts, with an academic severity framing.
+This section synthesizes evidence using only artifacts located in the `Documentation/` directory, following a traceability-first academic reporting criterion.
 
 ### Source corpus used for evidence extraction
 
 - `Documentation/Automating_Software_Supply_Chain_Security_AI_Powered_Threat_Detection_in_DevSecOps.pdf`
 - `Documentation/Marlon_Brenes_Rojas_SecDev2026_Academic_Brief_7202.pdf`
-- `project.tex`
-- `.github/workflows/CICD.yml`
-- `app_vulnerable.py`
+- `Documentation/Test Cases/ZAP DAST/zap_scan/report_md.md`
+- `Documentation/Test Cases/ZAP DAST/zap_scan/report_json.json`
+- `Documentation/Test Cases/ZAP DAST/zap_scan/report_html.html`
+- `Documentation/Test Cases/TestCases-Framework-OWASP.docx`
+- `Documentation/Test Cases/testcase procedure.docx`
+- `Documentation/Test Cases/test case formula.xlsx`
+- `Documentation/SSH/Install SSH.md`
+- `Documentation/export-code-scanning-report.ps1`
 - `Documentation/notes.md`
 
 ### Security test evidence matrix
 
 | Test ID | Security Control Domain | Tool / Method | Severity (Academic Classification) | Result (Documented) | Evidence Source |
 |---|---|---|---|---|---|
-| T-01 | Container vulnerability assessment | Trivy SARIF generation in CI | Critical | Multiple critical/high vulnerabilities documented in the project study and scanning workflow | `project.tex`, `.github/workflows/CICD.yml` |
-| T-02 | Static code security analysis | CodeQL (security-extended queries) | Critical | Critical findings category reported in the study baseline (e.g., command execution and template injection risk classes) | `project.tex`, `.github/workflows/CICD.yml` |
-| T-03 | Secrets exposure detection | detect-secrets baseline + scan | High | Secret-scanning stage established; baseline governance present for repository secret hygiene | `.github/workflows/CICD.yml`, `.secrets.baseline` |
-| T-04 | Dependency and code risk analysis | Snyk (Docker, Code, Open Source monitor) | High | SAST/SCA monitoring and SARIF upload integrated as documented controls | `.github/workflows/CICD.yml`, `project.tex` |
-| T-05 | Dynamic application security testing | OWASP ZAP full scan action | High | DAST orchestration configured with report artifact publishing for post-test review | `.github/workflows/CICD.yml` |
-| T-06 | Kubernetes manifest hardening checks | KubeSec + SARIF conversion | High | Kubernetes security scan and SARIF publication pipeline stage implemented | `.github/workflows/CICD.yml` |
-| T-07 | Application-layer misuse resilience | Route-level security tests (SQLi/XSS/auth/rate-limit/traversal) | Medium to High | Security-oriented endpoint test cases documented and codified in test script | `app_vulnerable.py` |
-| T-08 | Operational reliability of GitOps control plane | Argo CD operational recovery steps | Medium | Corrective procedure documented for service recovery and CLI verification | `Documentation/notes.md`, `argo/README.MD` |
+| T-01 | Dynamic application security testing | OWASP ZAP report (markdown/json/html) | Medium/Low/Informational observed | ZAP summary reports `High: 0`, `Medium: 3`, `Low: 4`, `Informational: 6` and details per finding family | `Documentation/Test Cases/ZAP DAST/zap_scan/report_md.md`, `Documentation/Test Cases/ZAP DAST/zap_scan/report_json.json`, `Documentation/Test Cases/ZAP DAST/zap_scan/report_html.html` |
+| T-02 | Security testing governance | OWASP-oriented test framework and procedures | Methodological control | Structured test framework and procedure artifacts are available for repeatable execution | `Documentation/Test Cases/TestCases-Framework-OWASP.docx`, `Documentation/Test Cases/testcase procedure.docx`, `Documentation/Test Cases/test case formula.xlsx` |
+| T-03 | Evidence extraction reproducibility | GitHub Code Scanning export automation | Operational control | Scripted extraction path from REST API to CSV/XLSX is documented for periodic evidence collection | `Documentation/export-code-scanning-report.ps1` |
+| T-04 | Academic synthesis and reporting | Research briefs and project report narrative | Cross-cutting evidence | Academic artifacts contextualize findings, controls, and architectural rationale for review committees | `Documentation/Automating_Software_Supply_Chain_Security_AI_Powered_Threat_Detection_in_DevSecOps.pdf`, `Documentation/Marlon_Brenes_Rojas_SecDev2026_Academic_Brief_7202.pdf` |
+| T-05 | Operational security continuity | Argo CD and SSH recovery procedures | Medium | Operational notes include pod recovery, login, log inspection, and SSH service status checks | `Documentation/notes.md`, `Documentation/SSH/Install SSH.md` |
 
-### Documented vulnerability outcomes (top findings in academic report)
+### Quantitative findings (documented)
 
-The technical paper (`project.tex`) reports vulnerability outcomes across severity levels, including critical, high, and medium classes, and associates them with automated detection tooling. Reported categories include:
+From the ZAP report summary:
 
-- Critical: heap-based buffer overflow, uncontrolled command execution, server-side template injection.
-- High: TLS verification weaknesses, remote code execution exposure classes in dependencies, ReDoS, privilege escalation vectors.
-- Medium: reflected XSS and information exposure patterns.
+- High: 0 alerts
+- Medium: 3 alerts
+- Low: 4 alerts
+- Informational: 6 alerts
 
-### Academic interpretation of results
+Alert families explicitly listed include missing CSP header, missing anti-clickjacking header, HTTP-only exposure, and server version disclosure, among others.
 
-- The evidence indicates strong coverage breadth (container, code, dependency, runtime, and Kubernetes layers).
-- The dominant risk profile remains concentrated in Critical and High classes, which supports a risk-prioritized remediation strategy.
-- Process maturity is evidenced by scan orchestration and SARIF normalization, but reproducibility would be strengthened by storing time-series metrics (finding count per severity, MTTR, and false-positive rate) per pipeline run.
+### Academic interpretation
+
+- The evidence set shows a multi-layer security strategy (SAST, DAST, container scanning, and secret scanning) with explicit CI/CD integration patterns.
+- DAST findings are concentrated in Medium/Low/Informational severities in the documented execution snapshot, suggesting partial hardening with remaining header and transport-policy gaps.
+- The vulnerable/secure application artifacts indicate intentional secure-by-design refactoring at route level, which supports a pedagogical before/after security narrative.
+
+### Methodological limitations
+
+- The current `Documentation/` corpus is strongest in DAST and operational procedures, while direct SAST/SCA/container-scan raw outputs are not centralized in the same folder.
+- PDF artifacts support academic framing, but machine-readable longitudinal metrics are limited in the current documentary corpus.
+
+### Metrics pending for future iterations
+
+- Time series per pipeline run: findings by severity and tool.
+- MTTR by vulnerability class and remediation owner.
+- False-positive rate and triage acceptance ratio.
+- Coverage metrics by route, dependency set, and container layer.
+
+## Evidence Reproducibility (Console to CSV/XLSX)
+
+To support repeatable academic reporting, this repository includes a PowerShell extractor for GitHub Code Scanning alerts:
+
+- `Documentation/export-code-scanning-report.ps1`
+
+### Execution from PowerShell
+
+1. Define a token with permission to read Code Scanning alerts.
+2. Run the extractor script from the repository root.
+
+```powershell
+$env:GITHUB_TOKEN = "<your_token>"
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\Documentation\export-code-scanning-report.ps1 -Owner "BrenesRM" -Repo "DevSecOps-NYIT-VAN" -State "open" -Format "both"
+```
+
+### Output artifacts
+
+- CSV report for direct analysis in spreadsheets.
+- XLSX report when `ImportExcel` module is available.
+- Default destination folder: `reports/`.
+
+This process reduces manual extraction bias from the web UI and improves traceability for periodic evidence collection.
 
 ## ACM Poster
 
@@ -163,6 +206,13 @@ DevSecOps-NYIT-VAN/
 ├── requirements.txt    # Python dependencies
 └── project.tex         # Academic paper source
 ```
+
+## Limitations and Future Work
+
+- Synchronize documentary workflows under `Documentation/old-workflows/` with the active `.github/workflows/` baseline to avoid configuration drift.
+- Add a versioned evidence index per release (date, commit hash, tools, and scan scope).
+- Integrate automatic publication of metrics dashboards (severity trends, MTTR, and remediation throughput).
+- Expand empirical validation with repeated measurements to support stronger statistical conclusions.
 
 ## Contributing
 
